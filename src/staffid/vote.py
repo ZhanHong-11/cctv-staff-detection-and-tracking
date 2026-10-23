@@ -34,6 +34,11 @@ class VoteParams:
     min_motion: float = 1.0     # px/frame; slower fragments can't make jump links
     vel_frames: int = 8         # frames used to estimate end/start velocity
     fill_gaps: bool = True      # interpolate staff position inside a staff chain
+    # limits on how far one identification spreads (None / 0 = off)
+    evidence_window: int | None = None  # staff only within +-N frames of a tag hit in the chain
+    # hits / scored boxes a chain needs. A long chain with only a few hits usually contains an ID
+    # swap onto the real staff member; 3% was chosen on the robustness variants (Step 8)
+    min_hit_rate: float = 0.03
 
 
 def track_table(tracks: pd.DataFrame, vel_frames: int = 8) -> pd.DataFrame:
@@ -103,16 +108,26 @@ def vote(scores: pd.DataFrame, chain: dict[int, int], p: VoteParams) -> pd.DataF
     """Per chain: number of scored boxes, hits, best score, and the staff decision."""
     s = scores.assign(chain=scores.track_id.map(chain), hit=scores.score >= p.hit_thresh)
     v = s.groupby("chain").agg(scored=("score", "size"), hits=("hit", "sum"), best=("score", "max"))
-    v["staff"] = v.hits >= p.min_hits
+    v["staff"] = (v.hits >= p.min_hits) & (v.hits / v.scored >= p.min_hit_rate)
     return v
 
 
 def staff_frames(tracks: pd.DataFrame, chain: dict[int, int], votes: pd.DataFrame, n_frames: int,
-                 p: VoteParams) -> pd.DataFrame:
-    """One row per frame: staff_present, x, y (box centre), box, source (track/interp/none)."""
+                 p: VoteParams, scores: pd.DataFrame | None = None) -> pd.DataFrame:
+    """One row per frame: staff_present, x, y (box centre), box, source (track/interp/none).
+    scores is needed when p.evidence_window is set."""
     t = tracks.assign(chain=tracks.track_id.map(chain))
     staff_chains = votes.index[votes.staff]
     t = t[t.chain.isin(staff_chains)]
+    if p.evidence_window and scores is not None and not t.empty:
+        hits = scores[scores.score >= p.hit_thresh].assign(chain=lambda d: d.track_id.map(chain))
+        keep = np.zeros(len(t), bool)
+        for c, h in hits[hits.chain.isin(staff_chains)].groupby("chain"):
+            sel = (t.chain == c).to_numpy()
+            fr = t.frame.to_numpy()[sel]
+            near = np.abs(fr[:, None] - h.frame.to_numpy()[None, :]).min(axis=1) <= p.evidence_window
+            keep[np.flatnonzero(sel)[near]] = True
+        t = t[keep]
     out = pd.DataFrame({"frame": np.arange(n_frames), "staff_present": 0, "x": np.nan, "y": np.nan,
                         "x1": np.nan, "y1": np.nan, "x2": np.nan, "y2": np.nan, "source": "none",
                         "chain": -1})

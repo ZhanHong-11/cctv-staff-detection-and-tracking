@@ -1,7 +1,7 @@
 # Step 1: Exploring the video
 
-**Status:** exploration done. A ground-truth draft is **not started yet**. It will be built once a
-person tracker exists (see "Plan for ground truth" below).
+**Status:** exploration done. A ground-truth draft is built (see the end of this file) and
+**needs checking by the user**.
 
 ## What was run
 | Script | What it does | Output |
@@ -73,12 +73,34 @@ final pipeline should detect large global brightness changes and handle them.
   also works on a test video with zero or several.
 - "Staff present" means at least part of the staff member is visible in the frame.
 
-## Plan for ground truth (next)
-Labeling 1341 frames box by box by hand is slow. The plan:
-1. Run the person tracker (Steps 2 and 3) to get tracks.
-2. Make contact sheets per track and decide by eye which tracks are the staff member, then fix ID
-   switches and gaps.
-3. Write `data/ground_truth.csv` (`frame, staff_present, x, y, w, h`), marked as **drafted by
-   Claude**.
-4. **The user checks it** before it's used in the Step 7 metrics. Otherwise the same system would
-   be writing the answer key and being graded against it.
+## Ground truth draft (drafted by Claude, needs checking by the user)
+Labeling 1341 frames box by box by hand is slow, so the draft reuses the Step 2–3 tracks:
+1. Contact sheets of the moving tracks (`scripts/review_tracks.py`) were checked by eye to decide
+   which tracks show the staff member, with the tag visible in many of them.
+2. The decisions are in **`ground_truth/staff_chain.json`**: which track follows the staff member
+   over which frames, and why. Edit this file to correct the ground truth.
+3. `scripts/step1_build_ground_truth.py` turns it into **`ground_truth/ground_truth_draft.csv`**:
+   `frame, staff_present, x, y, x1, y1, x2, y2, source, certain, pos_certain`.
+   Frames between pieces are interpolated, since the staff member was seen crossing the image
+   centre in every gap checked (`data/review/gaps.jpg`). It also writes
+   `data/review/ground_truth_draft.mp4` for checking.
+
+### What the draft says
+| Frames | Staff | Certain? | Notes |
+|---|---|---|---|
+| 0–274 | present, **seated** at the far-left desk in a white shirt | **no** | tag not visible; identity inferred because the staff member gets up from this seat |
+| 275–1257 | present, walking (white shirt, then hoodie from ~640) | yes | puts the hoodie on at ~633–653 while standing at the bottom desks |
+| 1258–1340 | absent | **no** | walked out at the bottom-left; could be sitting out of sight |
+
+1258 frames present, 983 with certain presence, 885 with certain position (`pos_certain` = from a
+track or a gap ≤ 10 frames; long gaps are guesses, e.g. frame 575 lands on empty floor).
+
+### Things to check (user)
+1. Is the seated white-shirt person in frames 0–274 really the staff member?
+2. Does the staff member really leave at ~1257, or sit down somewhere visible?
+3. Spot-check `data/review/ground_truth_draft.mp4` (green = tracked, yellow = interpolated).
+
+### Another finding from making the ground truth
+There's a **second dark-clothed person (not staff)** who walks near the staff member around frames
+900–1210. At ~1203 they meet, and the tracker's ID for the staff member jumps onto this person. This
+is a realistic hard case: clothing alone can't tell them apart, only the tag can.

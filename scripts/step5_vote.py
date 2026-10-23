@@ -62,7 +62,7 @@ def main() -> None:
                  members.get(c, [c]))
     votes.assign(tracks=members.reindex(votes.index).astype(str)).to_csv(out / "chains.csv")
 
-    pred = staff_frames(tracks, chain, votes, n, p)
+    pred = staff_frames(tracks, chain, votes, n, p, scores)
     pred.round(1).to_csv(out / "staff_frames.csv", index=False)
     log.info("predicted staff frames: %d (track %d, interp %d)", pred.staff_present.sum(),
              (pred.source == "track").sum(), (pred.source == "interp").sum())

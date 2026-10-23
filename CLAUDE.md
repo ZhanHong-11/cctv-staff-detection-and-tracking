@@ -54,7 +54,11 @@ outputs/             results: CSV, annotated video, plots
 
 ## Status
 - [x] venv created, video and PDF analyzed, PLAN.md written
-- [ ] Step 1 ground truth · [ ] 2 person detection · [ ] 3 tracking · [ ] 4 tag detection
-- [ ] 5 track voting · [ ] 6 coordinates · [ ] 7 evaluation · [ ] 8 CLI and robustness
+- [x] Step 1 ground truth **draft** (`ground_truth/`, needs checking by the user)
+- [x] 2 person detection (YOLO11s + 4 rotations) · [x] 3 tracking (ByteTrack)
+- [x] 4A tag detection (templates + surround check) · [ ] 4B trained tag classifier (optional)
+- [x] 5 linking + voting · [x] 6 pixel coordinates · [x] 7 evaluation · [x] 8 CLI `detect_staff.py`
+- [x] 8 robustness test written up (`docs/step8_robustness.md`); led to `min_hit_rate = 0.03`
+- Main entry point: `python detect_staff.py --video <file>`. Per-step explanations are in `docs/`.
 - Step 9 (the final 1–2 page write-up) is written **by the user**. Claude's job is to explain
   everything thoroughly in `docs/` and `WORKLOG.md` so the user has the material to write it.
