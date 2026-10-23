@@ -1,1 +1,12 @@
 .venv
+.DS_Store
+__pycache__/
+*.pyc
+
+# regenerable / large artifacts
+data/
+logs/
+outputs/*.mp4
+outputs/**/*.mp4
+*.pt
+runs/
