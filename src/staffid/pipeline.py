@@ -75,8 +75,11 @@ def write_video(video: str | Path, out_path: Path, res: dict, p: PipelineParams)
     by_frame = {f: g for f, g in tracks.groupby("frame")}
     hits = scores[scores.score >= p.vote.hit_thresh]
     hit_by_frame = {f: g for f, g in hits.groupby("frame")}
-    wr = cv2.VideoWriter(str(out_path), cv2.VideoWriter_fourcc(*"mp4v"), info["fps"],
-                         (info["width"], info["height"]))
+    size = (info["width"], info["height"])
+    # H.264 plays in QuickTime and browsers; fall back to MPEG-4 Part 2 if this OpenCV build lacks it
+    wr = cv2.VideoWriter(str(out_path), cv2.VideoWriter_fourcc(*"avc1"), info["fps"], size)
+    if not wr.isOpened():
+        wr = cv2.VideoWriter(str(out_path), cv2.VideoWriter_fourcc(*"mp4v"), info["fps"], size)
     for idx, frame in tqdm(iter_frames(video), total=info["frames"], desc="writing video", unit="frame"):
         for r in by_frame.get(idx, pd.DataFrame()).itertuples():
             cv2.rectangle(frame, (int(r.x1), int(r.y1)), (int(r.x2), int(r.y2)), (160, 160, 160), 1)
