@@ -2,7 +2,8 @@
 
 Interview take-home task. Find the frames where the **staff member** (the person wearing a white
 name tag with black vertical bars) appears in an overhead fisheye video, and give their x,y position.
-The full brief is in `AI Evaluation Test Candidates.pdf` and the step-by-step plan is in `PLAN.md`.
+The full brief is in `AI Evaluation Test Candidates.pdf`. Each approach has its own plan, e.g.
+`approach1_template_matching/PLAN.md`.
 
 ## Input data
 - `AI Test Candidates.mp4`: 960×720, 25 fps, 1341 frames (about 54 s). Overhead fisheye view of an office.
@@ -17,8 +18,15 @@ The full brief is in `AI Evaluation Test Candidates.pdf` and the step-by-step pl
   `source .venv/bin/activate && ...`. Never use the system Python or install anything globally.
 - **Ask the user before installing any package** (`pip install`) and before any network
   download (e.g. model weights). Once a package is approved and installed, add it to `requirements.txt` with its version pinned.
-- Already installed: `opencv-python`, `numpy`.
-- `ffmpeg` is not available. Read and write video with OpenCV (`cv2.VideoWriter`, `mp4v` codec).
+- Already installed (pinned in `requirements.txt`): opencv-python, numpy, ultralytics, lap, torch,
+  torchvision, pandas, matplotlib, tqdm. `torch.backends.mps` (Mac GPU) works. Not installed:
+  `sahi` (on standby).
+- Claude Code's auto-mode check blocked `pip install` once, even with the user's approval. If
+  that happens, add the package to `requirements.txt` and ask the user to run
+  `.venv/bin/pip install -r requirements.txt` themselves.
+- `ffmpeg` is not available. Read and write video with OpenCV. Write videos as H.264
+  (`avc1`, plays in QuickTime) and fall back to `mp4v` if `avc1` fails to open.
+- Ultralytics usage analytics are turned off in code (`SETTINGS.update({"sync": False})`).
 - Put temporary or throwaway files in the session scratchpad, not in the project.
 
 ## Directory layout
@@ -47,6 +55,22 @@ outputs/             results: CSV, plots (videos git-ignored)
 In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PROJECT_ROOT`,
 `SAMPLE_VIDEO` and `GT_DIR` (shared answer key). New approaches should use the same names.
 
+## Key facts about the sample video (learned in approach 1, useful for any approach)
+- The staff member **changes clothes**: white shirt + black trousers, then puts on a black hoodie
+  at frames ~633–653 while standing still. Clothing can't identify staff; only the tag can.
+- The tag is ~13×7 px (bars 1–2 px). It's visible in only ~18% of the staff member's frames.
+- People point **away from the image centre** (upside down at the bottom). Plain YOLO misses most
+  of them; running it on 4 rotations fixes this.
+- **The image centre is a blind spot**: people are seen from straight above and aren't detected,
+  so tracks break there every time someone crosses.
+- A **second dark-clothed person (not staff)** walks near the staff member around frames
+  900–1210; the tracker's ID swaps onto them at ~1211.
+- **Exposure dip** at frames 1300–1305 (the image goes nearly black).
+- The staff member is present in almost every frame, so presence metrics look good even with
+  the wrong person. **Position accuracy is what reveals a wrong identity.**
+- The answer key's positions are the tracker's own boxes, so a median error of 0 px means "same box",
+  not "tight fit".
+
 ## Logging and documentation conventions
 - Every script logs with Python's `logging` module to both the console and `logs/...log`. Log
   the parameters, the input, the output paths, the counts and the timings.
@@ -67,6 +91,18 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
 ### Approach 2
 - [ ] Not started. The user wants to build it **step by step together**, understanding each step
   before moving on, so don't build ahead of the agreed step.
+- **Waiting on two decisions from the user** (offered on 2026-10-24):
+  1. Which idea:
+     - **A. Trained tag classifier** (recommended): real tag patches + synthetic tags pasted
+       onto other people → small CNN replaces the hand-set surround-check rules.
+     - **B. YOLO tag detector on whole frames**: tag first, then attach it to the nearest person.
+     - **C. Unwarp the fisheye first** so ordinary detectors work.
+     - **D. Appearance re-identification**: confirm staff once by the tag, then follow by
+       appearance (weak here because the staff member changes clothes).
+  2. Reuse approach 1's detection + tracking (faster, clean comparison) **or** build everything
+     from scratch (more learning).
+- Once decided: create `approach2_<name>/` with the same layout, write the plan for **step 1
+  only**, and go through it with the user before building.
 
 ### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written
@@ -76,6 +112,15 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
 - [x] 5 linking + voting · [x] 6 pixel coordinates · [x] 7 evaluation · [x] 8 CLI `detect_staff.py`
 - [x] 8 robustness test written up (`docs/step8_robustness.md`); led to `min_hit_rate = 0.03`
 - Main entry point: `cd approach1_template_matching && python detect_staff.py --video <file>`.
-  Per-step explanations are in its `docs/`.
+  Per-step explanations are in its `docs/`, and the story of what was tried is in its `JOURNEY.md`.
+- Result (sample video, certain frames): precision 1.0, recall 0.90, 95% of positions within 25 px,
+  staff present frames 365–1246, ~2.5 min runtime.
+- Known gaps: white-shirt walk-off (275–364) missed; ID swap puts the box on the wrong person at
+  ~1211–1246; seated period 0–274 undecidable; never tested on a video without staff; all
+  settings tuned on one clip.
+- Still open for the user: **check the answer key** (`ground_truth/staff_chain.json`: is the
+  seated person in frames 0–274 the staff member? do they leave at ~1257?).
+- Verified after the move into `approach1_template_matching/` (2026-10-24): `scripts/step5_vote.py`
+  gives the same result as before.
 - Step 9 (the final 1–2 page write-up) is written **by the user**. Claude's job is to explain
   everything thoroughly in `docs/` and `WORKLOG.md` so the user has the material to write it.

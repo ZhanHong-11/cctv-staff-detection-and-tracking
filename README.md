@@ -7,7 +7,7 @@ fisheye video, and their x,y position. The task is in `AI Evaluation Test Candid
 | Folder | Idea | Status |
 |---|---|---|
 | [`approach1_template_matching/`](approach1_template_matching/) | YOLO on 4 rotations → ByteTrack → tag template matching with surround check → link track pieces and vote per person | finished: precision 1.0, recall 0.90, 95% of positions within 25 px (sample video, certain frames) |
-| `approach2_…` | to be decided | not started |
+| `approach2_…` | to be decided (options A–D listed in `CLAUDE.md`) | not started |
 
 Each folder has its own `README.md` (how to run), `JOURNEY.md` (what was tried and why) and `docs/`.
 

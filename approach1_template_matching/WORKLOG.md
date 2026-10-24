@@ -70,3 +70,10 @@ python detect_staff.py --video "AI Test Candidates.mp4" --gt ground_truth/ground
 - The user needs to check the ground-truth draft (seated period 0–274, exit at ~1257).
 - Optional 4B: trained tag classifier (the biggest expected gain in robustness).
 - No test on a video without staff.
+
+## 2026-10-23/24: wrap-up
+
+- Annotated video switched to H.264 (`avc1`, fallback `mp4v`): plays in QuickTime, and the file shrank from 40 MB to 10 MB.
+- `JOURNEY.md` added: what was tried, what failed, and how the strategy changed at each stage.
+- Project reorganised (in a side session): approach 1 moved into `approach1_template_matching/`. The sample video, `ground_truth/`, `requirements.txt` and `.venv` are shared at the project root, and `src/staffid/common.py` gained `PROJECT_ROOT`, `SAMPLE_VIDEO` and `GT_DIR`. Checked after the move: `scripts/step5_vote.py` gives the same result (2 staff chains, recall 0.897).
+- Approach 2 hasn't started; the options are listed in the root `CLAUDE.md`.

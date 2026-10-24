@@ -1,7 +1,7 @@
 """Find the staff member (person wearing the staff tag) in an overhead fisheye video.
 
 Usage:
-  python detect_staff.py --video "AI Test Candidates.mp4"
+  python detect_staff.py --video "../AI Test Candidates.mp4"
   python detect_staff.py --video test.mp4 --out outputs/test --fast --no-video
 
 Outputs (in --out, default outputs/<video name>/):
