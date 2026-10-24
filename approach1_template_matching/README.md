@@ -4,15 +4,15 @@ Finds the frames where the staff member (wearing the staff name tag) is present,
 position, in a FootfallCam overhead fisheye video.
 
 Shared with other approaches (one level up): the sample video, the answer key in
-`../ground_truth/`, `../requirements.txt` and `../.venv`. Paths in `docs/` that mention
-`ground_truth/` refer to that shared folder.
+`../approach1_groundtruth/`, `../requirements.txt` and `../.venv`. Paths in `docs/` that mention
+`approach1_groundtruth/` refer to that shared folder.
 
 ## Setup (once, from the project root)
 ```bash
 python3 -m venv .venv            # Python 3.12+ (tested on 3.14)
 .venv/bin/pip install -r requirements.txt
 ```
-The YOLO weights (`models/yolo11s.pt`, `models/yolo11n.pt`) download automatically on the first run.
+The YOLO weights (`../models/yolo11s.pt`, `../models/yolo11n.pt`, shared by all approaches) download automatically on the first run.
 **For an offline demo, run the pipeline once beforehand** so they're cached.
 
 ## Run (from this folder)
@@ -21,7 +21,7 @@ cd approach1_template_matching
 source ../.venv/bin/activate
 python detect_staff.py --video "../AI Test Candidates.mp4"
 python detect_staff.py --video test.mp4 --fast --no-video   # quicker: nano model, no video output
-python detect_staff.py --video "../AI Test Candidates.mp4" --gt ../ground_truth/ground_truth_draft.csv  # with scoring
+python detect_staff.py --video "../AI Test Candidates.mp4" --gt ../approach1_groundtruth/ground_truth_draft.csv  # with scoring
 ```
 The scripts in `scripts/` find the sample video and answer key by themselves.
 Results go to `outputs/<video name>/`:

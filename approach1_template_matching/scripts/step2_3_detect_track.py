@@ -18,7 +18,7 @@ import pandas as pd
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, SAMPLE_VIDEO, iter_frames, setup_logging, video_info  # noqa: E402
+from staffid.common import MODELS_DIR, ROOT, SAMPLE_VIDEO, iter_frames, setup_logging, video_info  # noqa: E402
 from staffid.detect import DetectParams, PersonDetector  # noqa: E402
 from staffid.track import PersonTracker, TrackParams  # noqa: E402
 
@@ -32,7 +32,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--video", default=str(SAMPLE_VIDEO))
     ap.add_argument("--out", default=str(ROOT / "data" / "step2_3"))
-    ap.add_argument("--weights", default=str(ROOT / "models" / "yolo11s.pt"))
+    ap.add_argument("--weights", default=str(MODELS_DIR / "yolo11s.pt"))
     ap.add_argument("--no-video", action="store_true")
     args = ap.parse_args()
 

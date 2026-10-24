@@ -36,10 +36,10 @@ only the inputs, the answer key and the environment are shared at the top level.
 CLAUDE.md                      this file (rules for all approaches)
 requirements.txt, .venv/       shared environment
 AI Test Candidates.mp4, *.pdf  the task and sample video
-ground_truth/                  shared answer key (staff_chain.json -> ground_truth_draft.csv),
-                               so every approach is scored the same way
+models/                        shared YOLO weights (git-ignored) + approach 1's tag_templates/
+approach1_groundtruth/         answer key built in approach 1 (staff_chain.json -> ground_truth_draft.csv)
 approach1_template_matching/   finished: YOLO + rotations, ByteTrack, tag templates, track voting
-approach2_<name>/              next approach, built step by step with the user
+approach2/                     next approach, built step by step with the user (folder created, empty)
 ```
 Inside each approach folder:
 ```
@@ -48,7 +48,6 @@ detect_staff.py      command-line entry point: --video <path> --out <dir>
 src/<package>/       reusable pipeline code (the final pipeline only imports from here)
 scripts/             one script per step: building, checking and inspecting on the sample video
 docs/                one explanation file per step (how, why, results, figures)
-models/              templates / weights (weights are git-ignored)
 logs/, data/         per-run logs and regenerable intermediate files (git-ignored)
 outputs/             results: CSV, plots (videos git-ignored)
 ```
@@ -101,12 +100,12 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
        appearance (weak here because the staff member changes clothes).
   2. Reuse approach 1's detection + tracking (faster, clean comparison) **or** build everything
      from scratch (more learning).
-- Once decided: create `approach2_<name>/` with the same layout, write the plan for **step 1
-  only**, and go through it with the user before building.
+- The folder `approach2/` exists (created 2026-10-24, empty). Once decided, set it up with the
+  same layout, write the plan for **step 1 only**, and go through it with the user before building.
 
 ### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written
-- [x] Step 1 ground truth **draft** (`ground_truth/`, needs checking by the user)
+- [x] Step 1 ground truth **draft** (`approach1_groundtruth/`, needs checking by the user)
 - [x] 2 person detection (YOLO11s + 4 rotations) · [x] 3 tracking (ByteTrack)
 - [x] 4A tag detection (templates + surround check) · [ ] 4B trained tag classifier (optional)
 - [x] 5 linking + voting · [x] 6 pixel coordinates · [x] 7 evaluation · [x] 8 CLI `detect_staff.py`
@@ -118,7 +117,7 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
 - Known gaps: white-shirt walk-off (275–364) missed; ID swap puts the box on the wrong person at
   ~1211–1246; seated period 0–274 undecidable; never tested on a video without staff; all
   settings tuned on one clip.
-- Still open for the user: **check the answer key** (`ground_truth/staff_chain.json`: is the
+- Still open for the user: **check the answer key** (`approach1_groundtruth/staff_chain.json`: is the
   seated person in frames 0–274 the staff member? do they leave at ~1257?).
 - Verified after the move into `approach1_template_matching/` (2026-10-24): `scripts/step5_vote.py`
   gives the same result as before.

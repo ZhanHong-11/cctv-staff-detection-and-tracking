@@ -17,12 +17,14 @@ from torchvision.ops import nms
 from ultralytics import YOLO
 from ultralytics.utils import SETTINGS
 
+from .common import MODELS_DIR
+
 SETTINGS.update({"sync": False})  # no anonymous usage analytics from ultralytics
 
 
 @dataclass
 class DetectParams:
-    weights: str = "models/yolo11s.pt"
+    weights: str = str(MODELS_DIR / "yolo11s.pt")
     imgsz: int = 960
     conf: float = 0.25
     nms_iou: float = 0.45

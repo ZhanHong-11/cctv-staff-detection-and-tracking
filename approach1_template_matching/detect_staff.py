@@ -22,7 +22,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
-from staffid.common import ROOT, setup_logging  # noqa: E402
+from staffid.common import MODELS_DIR, ROOT, setup_logging  # noqa: E402
 from staffid.detect import DetectParams  # noqa: E402
 from staffid.pipeline import PipelineParams, intervals, plot_timeline, run, write_video  # noqa: E402
 
@@ -31,7 +31,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--video", required=True)
     ap.add_argument("--out", help="output folder (default outputs/<video name>)")
-    ap.add_argument("--weights", default=str(ROOT / "models" / "yolo11s.pt"),
+    ap.add_argument("--weights", default=str(MODELS_DIR / "yolo11s.pt"),
                     help="YOLO weights; downloaded automatically if missing")
     ap.add_argument("--fast", action="store_true", help="smaller detector (yolo11n) for slow laptops")
     ap.add_argument("--every", type=int, default=3, help="score the tag on every Nth frame")
@@ -47,7 +47,7 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     log = setup_logging("detect_staff")
 
-    weights = str(ROOT / "models" / "yolo11n.pt") if args.fast else args.weights
+    weights = str(MODELS_DIR / "yolo11n.pt") if args.fast else args.weights
     p = PipelineParams(detect=DetectParams(weights=weights, device=args.device), every=args.every)
     res = run(video, p, log)
     pred, info = res["pred"], res["info"]

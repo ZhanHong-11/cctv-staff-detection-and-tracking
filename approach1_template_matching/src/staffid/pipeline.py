@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from .common import ROOT, iter_frames, video_info
+from .common import MODELS_DIR, ROOT, iter_frames, video_info
 from .detect import DetectParams, PersonDetector
 from .tag import MatchParams, TagMatcher, UprightParams, upright_crop
 from .track import PersonTracker, TrackParams
@@ -29,7 +29,7 @@ class PipelineParams:
     upright: UprightParams = field(default_factory=UprightParams)
     match: MatchParams = field(default_factory=MatchParams)
     vote: VoteParams = field(default_factory=VoteParams)
-    templates: str = str(ROOT / "models" / "tag_templates")
+    templates: str = str(MODELS_DIR / "tag_templates")
     every: int = 3   # score tags on every Nth frame
 
 

@@ -63,7 +63,7 @@ above, just a head and shoulders, so YOLO still misses them there.
 - The seated white-shirt person in frames 0–274 is *probably* the staff member, but the tag can't be
   seen. → marked **uncertain**.
 
-**Change:** built the answer key (`ground_truth/`) from the tracks with my decisions written down
+**Change:** built the answer key (`approach1_groundtruth/`) from the tracks with my decisions written down
 and explained, so you can check them. Positions in long gaps turned out to be guesses (frame 575
 landed on empty floor), so I added a `pos_certain` column.
 

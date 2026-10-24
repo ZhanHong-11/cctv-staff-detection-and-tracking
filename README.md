@@ -13,7 +13,7 @@ Each folder has its own `README.md` (how to run), `JOURNEY.md` (what was tried a
 
 ## Shared
 - `AI Test Candidates.mp4`: the sample video
-- `ground_truth/`: the answer key, a **draft that needs checking by the user**. Every approach is
+- `approach1_groundtruth/`: the answer key, a **draft that needs checking by the user**. Every approach is
   scored against the same key.
 - `requirements.txt` + `.venv/`: one Python environment for all approaches
 

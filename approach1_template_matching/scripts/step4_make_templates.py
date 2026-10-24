@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import GT_DIR, ROOT, SAMPLE_VIDEO, iter_frames, setup_logging  # noqa: E402
+from staffid.common import GT_DIR, MODELS_DIR, ROOT, SAMPLE_VIDEO, iter_frames, setup_logging  # noqa: E402
 from staffid.tag import TEMPLATE_UPSCALE, UprightParams, upright_crop  # noqa: E402
 
 # frame -> (x, y) of the tag in the upright crop, marked by eye; "light" = white shirt
@@ -50,7 +50,7 @@ def refine(gray: np.ndarray, xy: tuple[int, int], kind: str) -> tuple[int, int]:
 def main() -> None:
     log = setup_logging("step4_make_templates")
     gt = pd.read_csv(GT_DIR / "ground_truth_draft.csv")
-    out = ROOT / "models" / "tag_templates"
+    out = MODELS_DIR / "tag_templates"
     out.mkdir(parents=True, exist_ok=True)
     previews = []
     for i, frame in iter_frames(SAMPLE_VIDEO):

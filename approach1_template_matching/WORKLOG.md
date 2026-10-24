@@ -37,7 +37,7 @@
 - Plain YOLO found 0–5 of ~20 people per frame (people look upside down at the bottom of the fisheye image). Detecting on 4 rotations raised that to 11–12. Chosen: yolo11s, 960 px, 4 rotations + NMS, 0.065 s/frame.
 - ByteTrack via an adapter: 159 tracks. Detection is lost at the image centre (seen from straight above), so the staff member's track breaks into ~20 pieces.
 
-**Step 1 (continued): ground-truth draft** (`docs/step1_explore.md`, `ground_truth/`)
+**Step 1 (continued): ground-truth draft** (`docs/step1_explore.md`, `approach1_groundtruth/`)
 - Built from the tracks, checked by eye. Findings: the staff member puts the hoodie on at ~633–653; a second dark-clothed person (not staff) is present and the tracker's ID swaps onto them at ~1211; the seated person in frames 0–274 is probably the staff member (uncertain).
 - `pos_certain` was added after frame 575 showed that long interpolation gaps are guesses.
 
@@ -63,7 +63,7 @@ python scripts/step4_make_templates.py && python scripts/step4_score_tags.py
 python scripts/step5_vote.py            # --no-link / --no-fill for ablations
 python scripts/step8_robustness.py      # ~9 min, caches tracks/scores
 python scripts/step8_revote.py          # compare voting rules in seconds
-python detect_staff.py --video "AI Test Candidates.mp4" --gt ground_truth/ground_truth_draft.csv
+python detect_staff.py --video "AI Test Candidates.mp4" --gt approach1_groundtruth/ground_truth_draft.csv
 ```
 
 **Open items**
@@ -75,5 +75,5 @@ python detect_staff.py --video "AI Test Candidates.mp4" --gt ground_truth/ground
 
 - Annotated video switched to H.264 (`avc1`, fallback `mp4v`): plays in QuickTime, and the file shrank from 40 MB to 10 MB.
 - `JOURNEY.md` added: what was tried, what failed, and how the strategy changed at each stage.
-- Project reorganised (in a side session): approach 1 moved into `approach1_template_matching/`. The sample video, `ground_truth/`, `requirements.txt` and `.venv` are shared at the project root, and `src/staffid/common.py` gained `PROJECT_ROOT`, `SAMPLE_VIDEO` and `GT_DIR`. Checked after the move: `scripts/step5_vote.py` gives the same result (2 staff chains, recall 0.897).
+- Project reorganised (in a side session): approach 1 moved into `approach1_template_matching/`. The sample video, `approach1_groundtruth/`, `requirements.txt` and `.venv` are shared at the project root, and `src/staffid/common.py` gained `PROJECT_ROOT`, `SAMPLE_VIDEO` and `GT_DIR`. Checked after the move: `scripts/step5_vote.py` gives the same result (2 staff chains, recall 0.897).
 - Approach 2 hasn't started; the options are listed in the root `CLAUDE.md`.
