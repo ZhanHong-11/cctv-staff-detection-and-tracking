@@ -14,12 +14,12 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, iter_frames  # noqa: E402
+from staffid.common import ROOT, SAMPLE_VIDEO, iter_frames  # noqa: E402
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--video", default=str(ROOT / "AI Test Candidates.mp4"))
+    ap.add_argument("--video", default=str(SAMPLE_VIDEO))
     ap.add_argument("--tracks-csv", default=str(ROOT / "data" / "step2_3" / "tracks.csv"))
     ap.add_argument("--tracks", type=int, nargs="+", required=True)
     ap.add_argument("--step", type=int, default=10, help="show every Nth frame of each track")

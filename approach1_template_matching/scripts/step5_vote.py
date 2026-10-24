@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, setup_logging, video_info  # noqa: E402
+from staffid.common import GT_DIR, ROOT, SAMPLE_VIDEO, setup_logging, video_info  # noqa: E402
 from staffid.evaluation import frame_metrics  # noqa: E402
 from staffid.vote import VoteParams, link_tracks, staff_frames, vote  # noqa: E402
 
@@ -35,10 +35,10 @@ def evaluate(pred: pd.DataFrame, gt: pd.DataFrame) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--video", default=str(ROOT / "AI Test Candidates.mp4"))
+    ap.add_argument("--video", default=str(SAMPLE_VIDEO))
     ap.add_argument("--tracks-csv", default=str(ROOT / "data" / "step2_3" / "tracks.csv"))
     ap.add_argument("--scores-csv", default=str(ROOT / "data" / "step4" / "tag_scores.csv"))
-    ap.add_argument("--gt", default=str(ROOT / "ground_truth" / "ground_truth_draft.csv"))
+    ap.add_argument("--gt", default=str(GT_DIR / "ground_truth_draft.csv"))
     ap.add_argument("--out", default=str(ROOT / "data" / "step5"))
     ap.add_argument("--no-link", action="store_true", help="vote per track only (ablation)")
     ap.add_argument("--no-fill", action="store_true", help="do not interpolate inside chains (ablation)")

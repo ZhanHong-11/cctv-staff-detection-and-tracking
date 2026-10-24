@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, setup_logging  # noqa: E402
+from staffid.common import GT_DIR, ROOT, setup_logging  # noqa: E402
 from staffid.vote import VoteParams, link_tracks, staff_frames, vote  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -32,7 +32,7 @@ N_FRAMES = 1341
 
 def main() -> None:
     log = setup_logging("step8_revote")
-    gt = pd.read_csv(ROOT / "ground_truth" / "ground_truth_draft.csv")
+    gt = pd.read_csv(GT_DIR / "ground_truth_draft.csv")
     rob = ROOT / "data" / "robustness"
     data = {"original": (pd.read_csv(ROOT / "data" / "step2_3" / "tracks.csv"),
                          pd.read_csv(ROOT / "data" / "step4" / "tag_scores.csv"), lambda x, y: (x, y))}

@@ -16,14 +16,14 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, iter_frames, setup_logging, video_info  # noqa: E402
+from staffid.common import GT_DIR, PROJECT_ROOT, ROOT, iter_frames, setup_logging, video_info  # noqa: E402
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--chain", default=str(ROOT / "ground_truth" / "staff_chain.json"))
+    ap.add_argument("--chain", default=str(GT_DIR / "staff_chain.json"))
     ap.add_argument("--tracks-csv", default=str(ROOT / "data" / "step2_3" / "tracks.csv"))
-    ap.add_argument("--out", default=str(ROOT / "ground_truth" / "ground_truth_draft.csv"))
+    ap.add_argument("--out", default=str(GT_DIR / "ground_truth_draft.csv"))
     ap.add_argument("--video-out", default=str(ROOT / "data" / "review" / "ground_truth_draft.mp4"))
     ap.add_argument("--max-interp-gap", type=int, default=10,
                     help="interpolated positions count as certain only in gaps up to this many frames")
@@ -31,7 +31,7 @@ def main() -> None:
 
     log = setup_logging("step1_build_ground_truth")
     chain = json.loads(Path(args.chain).read_text())
-    video = ROOT / chain["video"]
+    video = PROJECT_ROOT / chain["video"]
     n = video_info(video)["frames"]
     tracks = pd.read_csv(args.tracks_csv)
 

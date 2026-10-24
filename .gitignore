@@ -3,10 +3,9 @@
 __pycache__/
 *.pyc
 
-# regenerable / large artifacts
+# regenerable / large artifacts (inside every approach folder)
 data/
 logs/
-outputs/*.mp4
-outputs/**/*.mp4
+**/outputs/**/*.mp4
 *.pt
 runs/

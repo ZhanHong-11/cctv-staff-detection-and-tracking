@@ -1,5 +1,5 @@
 {
-  "video": "AI Test Candidates.mp4",
+  "video": "../AI Test Candidates.mp4",
   "frames": 1341,
   "fps": 25.0,
   "staff_frames": 882,
@@ -11,10 +11,10 @@
       "end_s": 49.84
     }
   ],
-  "analysis_seconds": 145.4,
+  "analysis_seconds": 146.3,
   "params": {
     "detect": {
-      "weights": "/Users/zhan/Documents/FootfallCam/models/yolo11s.pt",
+      "weights": "/Users/zhan/Documents/FootfallCam/approach1_template_matching/models/yolo11s.pt",
       "imgsz": 960,
       "conf": 0.25,
       "nms_iou": 0.45,
@@ -83,7 +83,27 @@
       "evidence_window": null,
       "min_hit_rate": 0.03
     },
-    "templates": "/Users/zhan/Documents/FootfallCam/models/tag_templates",
+    "templates": "/Users/zhan/Documents/FootfallCam/approach1_template_matching/models/tag_templates",
     "every": 3
+  },
+  "metrics_all_frames": {
+    "tp": 882,
+    "fp": 0,
+    "fn": 376,
+    "tn": 83,
+    "precision": 1.0,
+    "recall": 0.7011,
+    "f1": 0.8243,
+    "accuracy": 0.7196
+  },
+  "metrics_certain_frames": {
+    "tp": 882,
+    "fp": 0,
+    "fn": 101,
+    "tn": 0,
+    "precision": 1.0,
+    "recall": 0.8973,
+    "f1": 0.9458,
+    "accuracy": 0.8973
   }
 }

@@ -22,19 +22,30 @@ The full brief is in `AI Evaluation Test Candidates.pdf` and the step-by-step pl
 - Put temporary or throwaway files in the session scratchpad, not in the project.
 
 ## Directory layout
+The project holds **several approaches side by side**. Each approach folder is self-contained;
+only the inputs, the answer key and the environment are shared at the top level.
 ```
-CLAUDE.md            this file
-PLAN.md              step-by-step plan (what and why)
-WORKLOG.md           running journal: what was done, the commands run, results and decisions
-requirements.txt     pinned dependencies
-src/staffid/         reusable pipeline code (detection, tracking, tag detection, voting, I/O)
-scripts/             one script per plan step, e.g. step1_extract_frames.py
-detect_staff.py      final command-line entry point: --video <path> --out <dir>
-docs/                one explanation file per step: stepN_<name>.md (how, why, results, figures)
-logs/                log file for each run: stepN_<name>_<YYYYmmdd-HHMMSS>.log
-data/                generated data (frames, crops, labels), can be regenerated
-outputs/             results: CSV, annotated video, plots
+CLAUDE.md                      this file (rules for all approaches)
+requirements.txt, .venv/       shared environment
+AI Test Candidates.mp4, *.pdf  the task and sample video
+ground_truth/                  shared answer key (staff_chain.json -> ground_truth_draft.csv),
+                               so every approach is scored the same way
+approach1_template_matching/   finished: YOLO + rotations, ByteTrack, tag templates, track voting
+approach2_<name>/              next approach, built step by step with the user
 ```
+Inside each approach folder:
+```
+README.md, JOURNEY.md, WORKLOG.md, PLAN.md   how to run / what was tried / journal / plan
+detect_staff.py      command-line entry point: --video <path> --out <dir>
+src/<package>/       reusable pipeline code (the final pipeline only imports from here)
+scripts/             one script per step: building, checking and inspecting on the sample video
+docs/                one explanation file per step (how, why, results, figures)
+models/              templates / weights (weights are git-ignored)
+logs/, data/         per-run logs and regenerable intermediate files (git-ignored)
+outputs/             results: CSV, plots (videos git-ignored)
+```
+In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PROJECT_ROOT`,
+`SAMPLE_VIDEO` and `GT_DIR` (shared answer key). New approaches should use the same names.
 
 ## Logging and documentation conventions
 - Every script logs with Python's `logging` module to both the console and `logs/...log`. Log
@@ -53,12 +64,18 @@ outputs/             results: CSV, annotated video, plots
 - Keep it fast enough on a laptop CPU for the live demo.
 
 ## Status
+### Approach 2
+- [ ] Not started. The user wants to build it **step by step together**, understanding each step
+  before moving on, so don't build ahead of the agreed step.
+
+### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written
 - [x] Step 1 ground truth **draft** (`ground_truth/`, needs checking by the user)
 - [x] 2 person detection (YOLO11s + 4 rotations) · [x] 3 tracking (ByteTrack)
 - [x] 4A tag detection (templates + surround check) · [ ] 4B trained tag classifier (optional)
 - [x] 5 linking + voting · [x] 6 pixel coordinates · [x] 7 evaluation · [x] 8 CLI `detect_staff.py`
 - [x] 8 robustness test written up (`docs/step8_robustness.md`); led to `min_hit_rate = 0.03`
-- Main entry point: `python detect_staff.py --video <file>`. Per-step explanations are in `docs/`.
+- Main entry point: `cd approach1_template_matching && python detect_staff.py --video <file>`.
+  Per-step explanations are in its `docs/`.
 - Step 9 (the final 1–2 page write-up) is written **by the user**. Claude's job is to explain
   everything thoroughly in `docs/` and `WORKLOG.md` so the user has the material to write it.

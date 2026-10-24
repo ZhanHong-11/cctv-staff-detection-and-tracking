@@ -20,11 +20,11 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, iter_frames, setup_logging, video_info  # noqa: E402
+from staffid.common import GT_DIR, ROOT, SAMPLE_VIDEO, iter_frames, setup_logging, video_info  # noqa: E402
 from staffid.evaluation import frame_metrics  # noqa: E402
 from staffid.pipeline import PipelineParams, run  # noqa: E402
 
-VIDEO = ROOT / "AI Test Candidates.mp4"
+VIDEO = SAMPLE_VIDEO
 W, H = 960, 720
 
 # name -> (frame transform, inverse point transform back to original coordinates)
@@ -73,7 +73,7 @@ def main() -> None:
     log = setup_logging("step8_robustness")
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    gt = pd.read_csv(ROOT / "ground_truth" / "ground_truth_draft.csv")
+    gt = pd.read_csv(GT_DIR / "ground_truth_draft.csv")
     results = {}
     for name in args.variants:
         path = make_variant(name, out)

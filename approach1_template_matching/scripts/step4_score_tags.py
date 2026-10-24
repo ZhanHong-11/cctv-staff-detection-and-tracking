@@ -18,17 +18,17 @@ import pandas as pd
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, iter_frames, setup_logging, video_info  # noqa: E402
+from staffid.common import GT_DIR, ROOT, SAMPLE_VIDEO, iter_frames, setup_logging, video_info  # noqa: E402
 from staffid.evaluation import auc, label_boxes_with_gt  # noqa: E402
 from staffid.tag import MatchParams, TagMatcher, UprightParams, upright_crop  # noqa: E402
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--video", default=str(ROOT / "AI Test Candidates.mp4"))
+    ap.add_argument("--video", default=str(SAMPLE_VIDEO))
     ap.add_argument("--tracks-csv", default=str(ROOT / "data" / "step2_3" / "tracks.csv"))
     ap.add_argument("--templates", default=str(ROOT / "models" / "tag_templates"))
-    ap.add_argument("--gt", default=str(ROOT / "ground_truth" / "ground_truth_draft.csv"))
+    ap.add_argument("--gt", default=str(GT_DIR / "ground_truth_draft.csv"))
     ap.add_argument("--out", default=str(ROOT / "data" / "step4"))
     ap.add_argument("--every", type=int, default=3, help="score every Nth frame (tags change little frame to frame)")
     args = ap.parse_args()

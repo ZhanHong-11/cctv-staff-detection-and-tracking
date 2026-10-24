@@ -10,7 +10,10 @@ from typing import Iterator
 import cv2
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[2]      # this approach's folder (data/, logs/, models/, outputs/)
+PROJECT_ROOT = ROOT.parent                      # shared by all approaches
+SAMPLE_VIDEO = PROJECT_ROOT / "AI Test Candidates.mp4"
+GT_DIR = PROJECT_ROOT / "ground_truth"          # answer key shared by all approaches
 
 
 def setup_logging(step_name: str, log_dir: Path = ROOT / "logs") -> logging.Logger:

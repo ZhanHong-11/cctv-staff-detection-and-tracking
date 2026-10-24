@@ -14,13 +14,13 @@ from pathlib import Path
 import cv2
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, iter_frames, setup_logging, video_info  # noqa: E402
+from staffid.common import ROOT, SAMPLE_VIDEO, iter_frames, setup_logging, video_info  # noqa: E402
 from staffid.motion import MotionDetector, MotionParams  # noqa: E402
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--video", default=str(ROOT / "AI Test Candidates.mp4"))
+    ap.add_argument("--video", default=str(SAMPLE_VIDEO))
     ap.add_argument("--out", default=str(ROOT / "data" / "step1"))
     ap.add_argument("--crop-every", type=int, default=10)
     ap.add_argument("--zoom", type=int, default=3)

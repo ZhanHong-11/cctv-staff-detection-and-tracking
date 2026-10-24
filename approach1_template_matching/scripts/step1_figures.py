@@ -18,9 +18,9 @@ import cv2
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from staffid.common import ROOT, iter_frames, setup_logging  # noqa: E402
+from staffid.common import ROOT, SAMPLE_VIDEO, iter_frames, setup_logging  # noqa: E402
 
-VIDEO = ROOT / "AI Test Candidates.mp4"
+VIDEO = SAMPLE_VIDEO
 FIG = ROOT / "docs" / "figures"
 
 # frame -> person box (x, y, w, h) from the step 1 motion boxes
