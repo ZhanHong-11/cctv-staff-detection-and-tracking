@@ -39,7 +39,8 @@ AI Test Candidates.mp4, *.pdf  the task and sample video
 models/                        shared YOLO weights (git-ignored) + approach 1's tag_templates/
 approach1_groundtruth/         answer key built in approach 1 (staff_chain.json -> ground_truth_draft.csv)
 approach1_template_matching/   finished: YOLO + rotations, ByteTrack, tag templates, track voting
-approach2/                     next approach, built step by step with the user (folder created, empty)
+approach2/                     in progress: rectified fisheye views + ByteTrack; has its own
+                               USER-LABELLED answer key in approach2/ground_truth/ (use this one)
 ```
 Inside each approach folder:
 ```
@@ -68,7 +69,13 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
 - The staff member is present in almost every frame, so presence metrics look good even with
   the wrong person. **Position accuracy is what reveals a wrong identity.**
 - The answer key's positions are the tracker's own boxes, so a median error of 0 px means "same box",
-  not "tight fit".
+  not "tight fit". (True for both keys; approach 2's key also has straight-line fills and user clicks.)
+- **Answered by the user's labelling (approach 2 key):** the seated person on the left in frames
+  0–274 IS the staff member, and the staff member is present in **all 1341 frames** (no absent frames).
+- Walking across the centre the staff member moves up to ~28 px/frame (285 px in 10 frames, 353–364).
+- With rectified views, ByteTrack still changes the walking staff member's ID every ~1–2 s, and it
+  can keep an old ID "lost but alive" (track_buffer 50) while the person already has a new ID; the
+  old ID later re-matches, leaving an internal gap (cause of two bad fills in the first labelling).
 
 ## Logging and documentation conventions
 - Every script logs with Python's `logging` module to both the console and `logs/...log`. Log
@@ -87,21 +94,46 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
 - Keep it fast enough on a laptop CPU for the live demo.
 
 ## Status
-### Approach 2
-- [ ] Not started. The user wants to build it **step by step together**, understanding each step
-  before moving on, so don't build ahead of the agreed step.
-- **Waiting on two decisions from the user** (offered on 2026-10-24):
-  1. Which idea:
-     - **A. Trained tag classifier** (recommended): real tag patches + synthetic tags pasted
-       onto other people → small CNN replaces the hand-set surround-check rules.
-     - **B. YOLO tag detector on whole frames**: tag first, then attach it to the nearest person.
-     - **C. Unwarp the fisheye first** so ordinary detectors work.
-     - **D. Appearance re-identification**: confirm staff once by the tag, then follow by
-       appearance (weak here because the staff member changes clothes).
-  2. Reuse approach 1's detection + tracking (faster, clean comparison) **or** build everything
-     from scratch (more learning).
-- The folder `approach2/` exists (created 2026-10-24, empty). Once decided, set it up with the
-  same layout, write the plan for **step 1 only**, and go through it with the user before building.
+### Approach 2 (`approach2/`, in progress, built step by step WITH the user)
+Working rules the user set (2026-10-24):
+- Work only on the step the user names. Extras only if clearly beneficial, and **ask first**.
+- Code from approach 1 may be reused but is **copied** into approach 2, never imported from it.
+- Code shared by approach-2 scripts goes into `approach2/src/staffid2/` (not repeated per script).
+- `scripts/` = things the user runs; `src/staffid2/` = reusable building blocks.
+- Commit in logical sections (one commit per stage), only when the user asks.
+
+Layout (no PLAN.md / JOURNEY.md / README.md yet; `WORKLOG.md` is the journal, read it first):
+- `src/staffid2/`: `common.py` (paths `ROOT`, `PROJECT_ROOT`, `SAMPLE_VIDEO`, `MODELS_DIR`, logging,
+  `open_writer`), `fisheye_view.py` (view makers + mapping boxes back), `detect.py` (YOLO on views
+  + map back + NMS), `track.py` (ByteTrack wrapper, copied from approach 1), `labeling.py`
+  (answer-key logic), `drawing.py` (`draw_box`, `table_video`: draw any CSV of boxes onto the video).
+- `scripts/`: `yolo11_demo.py` (plain YOLO), `fisheye_unwarp.py` (pictures of each view method),
+  `compare_methods.py` (+ `docs/compare_methods.md`), `yolo11_rectified_demo.py`,
+  `track_rectified.py` (-> `data/track_rectified/tracks.csv`, committed because the labels refer
+  to its track IDs: **do not re-run it and overwrite that file**), `label_staff.py` (click tool),
+  `draw_ground_truth.py` (-> `outputs/ground_truth.mp4`).
+
+Done:
+- [x] Plain YOLO11s: median 3 people/frame; misses upside-down (bottom) and centre people.
+- [x] View methods compared (50 frames, MPS): rectified 4 views (45° tilt, 90° FOV, 764 px = native
+  detail) 14.6 people/frame, 45 ms, tight boxes -> **chosen**. Rotations (approach 1) 10.4 / 63 ms;
+  quad_axis 8.4 / 25 ms (cheap fallback, no lens model); quad_diag 15.2 but inflated loose boxes;
+  enlarging 2x barely helps; cylindrical fails. Centre blind spot remains for all.
+  Lens model is a guess (equidistant, 180°, centre = image centre, radius = half diagonal).
+- [x] Rectified detection + ByteTrack on the whole video: 21 fps on MPS, 223 tracks; seated people
+  keep one ID, the walking staff member gets ~24 IDs.
+- [x] **Answer key labelled and checked by the user**: `approach2/ground_truth/ground_truth.csv`
+  (`frame, staff_present [1/0/-1 unknown], x, y, x1..y2, source [track/interp/manual/absent/unlabelled],
+  track_id`; x,y = box centre). 3 sessions, numbered copies `ground_truth_N.csv`; actions in
+  `staff_labels.json`. Final: track 1167, interp 165, manual 9 frames; present 0–1340.
+  Fill rule: gaps <= 2.5 s straight-line interpolated; the tool makes the user check fills >= 0.4 s.
+
+Next (agreed order, nothing started): **3 tag recognition** -> 4 linking tracks into the staff
+track (can reuse `labeling.suggest`'s start-time/distance/speed logic) -> 5 evaluation against the
+approach 2 answer key (also score approach 1 on it) -> 6 `detect_staff.py` CLI, robustness, docs.
+Suggested first move for step 3: cut the staff member's box from every frame using the answer key
+(and other people as negatives) and look at how often/clearly the tag shows in the original vs
+rectified views; that decides between template rules (approach 1 style) and a trained classifier.
 
 ### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written
@@ -117,8 +149,8 @@ In approach 1, `src/staffid/common.py` defines `ROOT` (the approach folder), `PR
 - Known gaps: white-shirt walk-off (275–364) missed; ID swap puts the box on the wrong person at
   ~1211–1246; seated period 0–274 undecidable; never tested on a video without staff; all
   settings tuned on one clip.
-- Still open for the user: **check the answer key** (`approach1_groundtruth/staff_chain.json`: is the
-  seated person in frames 0–274 the staff member? do they leave at ~1257?).
+- The approach 1 draft key was never checked; the user-labelled approach 2 key answers its open
+  questions (seated person 0–274 is staff; staff present until the last frame, not leaving at ~1257).
 - Verified after the move into `approach1_template_matching/` (2026-10-24): `scripts/step5_vote.py`
   gives the same result as before.
 - Step 9 (the final 1–2 page write-up) is written **by the user**. Claude's job is to explain
