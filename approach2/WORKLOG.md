@@ -169,3 +169,51 @@ code taken from it is copied.
 - Committed in stages: plain YOLO -> fisheye views + comparison -> rectified demo -> tracking ->
   labelling tool -> answer key -> docs.
 - Next: step 3, tag recognition (first look at tag visibility in staff crops from the answer key).
+
+## 2026-10-25: step 3a started: staff crops and tag labelling tool
+
+Plan agreed with the user for step 3 (tag recognition):
+- Detect the tag only, inside person crops (people come from step 2); x,y output stays the person.
+- Two detectors to compare: OpenCV NCC (template bank) and a small classifier on person crops.
+  Full-frame YOLO fine-tuning rejected (tag ~13x7 px is about one cell at YOLO's finest stride).
+- Training data / templates come ONLY from the brief's tag photo + a drawn tag, augmented
+  (resolution, blur, compression, perspective, rotation, lighting, shirt/background, occlusion).
+  Other people's crops = negatives / backgrounds (safe: no tag). The tags labelled in the video
+  are used only to measure the real tag (to set augmentation ranges) and as the test set.
+- Sightings (continuous ranges where the tag shows) are counted separately from frames: repeated
+  corridor crossings give near-duplicate frames. Results are reported per frame and per sighting.
+- First look (2 frames, scratchpad): on the black hoodie the tag is a bright ~17x9 px rectangle
+  with 3 dips (bars); on the white shirt there is no bright rectangle at all, only the dark bars
+  (~10x5 px). Shirt colour changes what the tag looks like, so both must be in the augmentation.
+
+Built:
+- `src/staffid2/person_crop.py`: `Lens.for_frame` (same lens guess as detection), `aim` (azimuth,
+  tilt, fov, size computed from the box alone: tilt = distance from centre / f), `person_view`
+  (rectified crop as a `View`), `original_crop`, `to_original_points` (sub-pixel crop -> frame).
+- `scripts/staff_crops.py`: every 5th frame, staff crop from the answer key + up to 3 negatives
+  (other tracks, skipping boxes with IoU > 0.3 with the staff box = duplicates of the staff).
+  `../.venv/bin/python scripts/staff_crops.py` -> 269 staff crops (track 235, interp 32, manual 2),
+  804 negatives from 115 tracks, 1.9 s. Staff crop 72-273 px (median 178), tilt 10-59 deg.
+  Outputs: `data/tag_crops/` (PNGs + crops.csv), `outputs/tag_crops/staff_sheet_01..07.jpg`,
+  `compare_original_rectified.jpg`.
+- `scripts/label_tag.py` (user tool): rectified staff crop enlarged with pixel grid and zoom
+  (x1-x4), s/e mark sighting ranges, drag a box around the tag on a few frames per sighting,
+  ijkl/IJKL nudge by 1 px, undo, timeline strip. Right side shows the whole frame and the
+  original crop with the tag box mapped back. Frames outside sightings = "not labelled".
+  Saves `ground_truth/tag_labels.json`, `tag_boxes.csv` (crop box, w/h, aim, original-frame
+  position), `tag_sightings.csv`.
+- Tested headless (scratchpad output): drag at zoom x3 -> exact crop pixels; nudge + undo;
+  save -> reload identical; box at frame 380 maps onto the tag in the original frame.
+
+Next: the user labels the sightings with `label_tag.py`; then a measurement script (tag size,
+squash, contrast, bar profile, coverage per sighting) and `docs/step3a_tag_survey.md`.
+
+## 2026-10-25: tag labels done (user)
+
+- User labelled with `label_tag.py`: 11 sightings (314-322, 334-345, 376-386, 426-436, 457-473,
+  503-513, 542-559 white shirt; 809-821, 844-864, 890-905, 924-942 black hoodie), 158 frames,
+  63 boxes (4-8 per sighting, none outside a sighting). Tag box w 5-26 px (median 16), h 5-21 px
+  (median 11); the tag grows and gets less squashed as the person walks toward the centre.
+- Not labelled, by the user's choice: seated period 0-274 (too blurry to see the tag) and after
+  942 (same movement as the earlier hoodie passes, judged already covered). Frames 819-821 use the
+  user's manual staff box from the answer key.

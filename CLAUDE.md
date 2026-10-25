@@ -106,7 +106,10 @@ Layout (no PLAN.md / JOURNEY.md / README.md yet; `WORKLOG.md` is the journal, re
 - `src/staffid2/`: `common.py` (paths `ROOT`, `PROJECT_ROOT`, `SAMPLE_VIDEO`, `MODELS_DIR`, logging,
   `open_writer`), `fisheye_view.py` (view makers + mapping boxes back), `detect.py` (YOLO on views
   + map back + NMS), `track.py` (ByteTrack wrapper, copied from approach 1), `labeling.py`
-  (answer-key logic), `drawing.py` (`draw_box`, `table_video`: draw any CSV of boxes onto the video).
+  (answer-key logic), `drawing.py` (`draw_box`, `table_video`: draw any CSV of boxes onto the video),
+  `person_crop.py` (person-centred rectified crop: aim/tilt computed from the box).
+- Step 3a scripts: `staff_crops.py` (staff + negative crops, contact sheets), `label_tag.py`
+  (user tool: tag sighting ranges + tag boxes -> `ground_truth/tag_*.{json,csv}`).
 - `scripts/`: `yolo11_demo.py` (plain YOLO), `fisheye_unwarp.py` (pictures of each view method),
   `compare_methods.py` (+ `docs/compare_methods.md`), `yolo11_rectified_demo.py`,
   `track_rectified.py` (-> `data/track_rectified/tracks.csv`, committed because the labels refer
@@ -128,7 +131,11 @@ Done:
   `staff_labels.json`. Final: track 1167, interp 165, manual 9 frames; present 0–1340.
   Fill rule: gaps <= 2.5 s straight-line interpolated; the tool makes the user check fills >= 0.4 s.
 
-Next (agreed order, nothing started): **3 tag recognition** -> 4 linking tracks into the staff
+Step 3 in progress (see WORKLOG 2026-10-25): plan = NCC + small classifier on person crops, trained
+only on the brief's tag + drawn tag with augmentation; video tags labelled by the user are for
+measuring and testing only. 3a tools built; waiting for the user's labelling with `label_tag.py`.
+
+Next (agreed order): **3 tag recognition** -> 4 linking tracks into the staff
 track (can reuse `labeling.suggest`'s start-time/distance/speed logic) -> 5 evaluation against the
 approach 2 answer key (also score approach 1 on it) -> 6 `detect_staff.py` CLI, robustness, docs.
 Suggested first move for step 3: cut the staff member's box from every frame using the answer key
