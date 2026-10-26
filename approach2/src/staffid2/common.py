@@ -12,6 +12,12 @@ ROOT = Path(__file__).resolve().parents[2]      # approach2/ (logs/, outputs/)
 PROJECT_ROOT = ROOT.parent                      # shared by all approaches
 SAMPLE_VIDEO = PROJECT_ROOT / "AI Test Candidates.mp4"
 MODELS_DIR = PROJECT_ROOT / "models"            # shared YOLO weights
+BRIEF_PDF = PROJECT_ROOT / "AI Evaluation Test Candidates.pdf"   # source of the tag's appearance
+TRACKS_CSV = ROOT / "data" / "track_rectified" / "tracks.csv"
+ANSWER_KEY = ROOT / "ground_truth" / "ground_truth.csv"         # user-labelled staff track
+TAG_BOXES = ROOT / "ground_truth" / "tag_boxes.csv"             # user-labelled tag boxes (3a)
+TAG_SIGHTINGS = ROOT / "ground_truth" / "tag_sightings.csv"
+TAG_SCORES = ROOT / "data" / "tag_scores" / "ncc_track_scores.csv"   # score_tracks.py output
 
 
 def setup_logging(step_name: str, log_dir: Path = ROOT / "logs") -> logging.Logger:

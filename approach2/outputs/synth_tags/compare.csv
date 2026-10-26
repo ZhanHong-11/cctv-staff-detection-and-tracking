@@ -1,0 +1,22 @@
+measure,data,min,p5,median,p95,max
+length,real,5.306,7.44,12.818,18.54,19.184
+length,synthetic,2.124,5.253,15.132,25.563,31.641
+length,real inside synthetic 1-99%,1.0,,,,
+shape_ratio,real,0.296,0.354,0.486,0.697,0.861
+shape_ratio,synthetic,0.137,0.269,0.626,0.89,0.976
+shape_ratio,real inside synthetic 1-99%,1.0,,,,
+angle_deg,real,-38.11,-30.811,9.031,51.494,58.926
+angle_deg,synthetic,-89.96,-75.28,1.083,78.476,89.718
+angle_deg,real inside synthetic 1-99%,1.0,,,,
+tag_vs_shirt,real,-17.4,-5.9,18.9,134.65,139.0
+tag_vs_shirt,synthetic,-9.0,5.0,43.9,119.005,211.5
+tag_vs_shirt,real inside synthetic 1-99%,0.921,,,,
+bar_contrast,real,29.0,50.11,76.1,134.65,138.0
+bar_contrast,synthetic,12.0,28.19,81.0,161.65,226.9
+bar_contrast,real inside synthetic 1-99%,1.0,,,,
+sharpness,real,0.205,0.305,0.463,0.771,1.0
+sharpness,synthetic,0.184,0.257,0.461,0.808,1.0
+sharpness,real inside synthetic 1-99%,0.968,,,,
+n_dips,real,0.0,0.0,3.0,4.0,5.0
+n_dips,synthetic,0.0,0.0,2.0,5.0,7.0
+n_dips,real inside synthetic 1-99%,1.0,,,,
