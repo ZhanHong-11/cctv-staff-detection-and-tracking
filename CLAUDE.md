@@ -102,13 +102,17 @@ Working rules the user set (2026-10-24):
 - `scripts/` = things the user runs; `src/staffid2/` = reusable building blocks.
 - Commit in logical sections (one commit per stage), only when the user asks.
 
-Layout (no PLAN.md / JOURNEY.md / README.md yet; `WORKLOG.md` is the journal, read it first):
+Layout (no PLAN.md / JOURNEY.md / README.md yet; `WORKLOG.md` is the journal, read it first;
+`docs/tag_recognition_&_staff_tracking.md` is the user's short reference for the step 4 rules):
 - `src/staffid2/`: `common.py` (paths `ROOT`, `PROJECT_ROOT`, `SAMPLE_VIDEO`, `MODELS_DIR`, logging,
   `open_writer`), `fisheye_view.py` (view makers + mapping boxes back), `detect.py` (YOLO on views
   + map back + NMS), `track.py` (ByteTrack wrapper, copied from approach 1), `labeling.py`
   (answer-key logic), `drawing.py` (`draw_box`, `table_video`: draw any CSV of boxes onto the video),
   `person_crop.py` (person-centred rectified crop: aim/tilt computed from the box),
-  `tag_measure.py`, `tag_source.py`, `synth_tag.py`, `ncc.py`, `tag_score.py` (step 3).
+  `tag_measure.py`, `tag_source.py`, `synth_tag.py`, `ncc.py`, `tag_score.py` (step 3), `follow.py`
+  (step 4 follower), `pipeline.py` (step 6: `PersonTracks` detection + tracking loop, `tag_bank`).
+- Entry point: `approach2/staff_detector.py --video <file>` -> `approach2/result/<video name>/`
+  (one folder per video so runs do not overwrite each other).
 - Step 3a scripts: `staff_crops.py` (staff + negative crops, contact sheets), `label_tag.py`
   (user tool: tag sighting ranges + tag boxes -> `ground_truth/tag_*.{json,csv}`), `tag_survey.py`
   (measurements via `src/staffid2/tag_measure.py` + figures).
