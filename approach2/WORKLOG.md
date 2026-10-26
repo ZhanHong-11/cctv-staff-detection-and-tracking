@@ -336,3 +336,53 @@ squash, contrast, bar profile, coverage per sighting) and `docs/step3a_tag_surve
   (4) Focus = colour only in the first version.
 - New work happens in `review_pending/` until the user accepts it. Next: 4.1 rules doc (states,
   settings) for the user to check before any code.
+
+## 2026-10-26: step 4.2-4.4 live follower, viewer, score (in `review_pending/`, under review)
+
+- The user: "just go first and we do refinement later", with a viewer like the tag score viewer.
+  Colours agreed: focus = orange (a hit in the last 1 s, colour only), suspect = yellow (4.5).
+- `review_pending/src/follow.py` (Follower, fill_gaps, main_output, score),
+  `review_pending/scripts/follow_staff.py` (run + score, ~1 s, 0.2 ms/frame for following),
+  `review_pending/scripts/follow_viewer.py` (user tool: live / saved views, events, strips).
+  Rules doc updated (`review_pending/docs/step4_rules.md`, additions marked 4.2); results in
+  `review_pending/docs/step4_follow.md`.
+- Result (live): first confirmation 385; right when it says staff 83.9 % (686/818); right after the
+  first confirmation 71.8 % live, 81.7 % saved (end fill). 123 of the 132 wrong live frames are the
+  ID swap at 867-1018 (4.5 case 1).
+- Rules added while building (each re-scored, all generic but found on this video): switch an
+  UNCERTAIN target to a better continuation of the same loss (53 -> 73 %); keep the earlier loss
+  point after a brief guess, `trust_frames` = 10; a hit makes a target green again but only a
+  confirmation (> 0.065) picks the main target, which stays main while LOST.
+- Open: the swap; a stale wrong target stays green forever after a hit on a seated person; hits on
+  guessed tracks of seated people. Next: the user reviews in the viewer, then 4.5.
+
+## 2026-10-26: step 4.5 case 1, suspects after a loss (in `review_pending/`, under review)
+
+- Why: at the ID swap (865) the staff member got old IDs of other people (142, 369); the
+  continuation search only takes tracks born after the loss, so the right person was never a
+  candidate, although the tag showed on them (hits at 890, 925, 928).
+- Rule (user agreed to try): when a target is lost, everyone within 250 px of the loss point for
+  5 s becomes a suspect (yellow), old tracks included; a hit on a suspect that moved >= 40 px in
+  the last 25 frames moves the target there. Runs next to the movement guess, not instead of it.
+- First hit wins: worse (live 81.6 % right when said): another walking person (track 384, never
+  staff) hit 0.055 at 881, before the staff member's 0.052 at 890. Latest hit wins (window stays
+  open until a confirmation or 5 s): **live 95.1 % right when said, 80.8 % after the first
+  confirmation; saved 92.2 %** (4.2: 83.9 / 71.8 / 81.7). Wrong live frames 132 -> 40.
+- Viewer: suspects drawn yellow, listed under the target. Docs: `review_pending/docs/step4_follow.md`
+  (section 4.5), `step4_rules.md`, `tag_recognition_&_staff_tracking.md` (rule 10).
+- Settings are first guesses and the variant was chosen on this one swap: optimistic for a new video.
+- User's choice: while the suspect window is open, a hit-made green is shown light green (UNCERTAIN)
+  because a later suspect hit can still move it; solid green only after a real confirmation or the
+  window's end. Same CSV; solid green is now 196 frames, all on the right person.
+- Checked ~1209 (staff box 553 overlapping 478 at IoU 0.22): the tracker kept the ID on the staff
+  member, the follower stayed right; the 0.075 confirmation at 1201 had closed the window.
+
+## 2026-10-26: step 4 accepted and moved out of `review_pending/`
+
+- The user accepted step 4. Moved: `review_pending/src/follow.py` -> `src/staffid2/follow.py`;
+  `follow_staff.py`, `follow_viewer.py` -> `scripts/`; `step4_rules.md`, `step4_follow.md`,
+  `tag_recognition_&_staff_tracking.md` + figures -> `docs/`; outputs -> `outputs/follow/`; logs ->
+  `logs/`. `review_pending/` removed. Re-run from the new place: `score.json` and `staff.csv`
+  byte-identical to before the move.
+- Next: the confirmation threshold (fitted on this video) and the `detect_staff.py` CLI (results in
+  a `result/` folder, as the user asked).

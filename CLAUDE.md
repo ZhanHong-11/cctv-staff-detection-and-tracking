@@ -149,22 +149,27 @@ and testing only.
   `tag_score_viewer.py`; src: `tag_source.py`, `synth_tag.py`, `ncc.py`, `tag_score.py`; paths
   `BRIEF_PDF`, `TRACKS_CSV`, `ANSWER_KEY`, `TAG_BOXES`, `TAG_SIGHTINGS`, `TAG_SCORES` in `common.py`.
 
-Step 4 linking: a first version (anchors = score > 0.065, then following forward AND backward,
-93.5 % of frames right) is in `approach2/review_pending/` and was NOT accepted. **The user wants
-live logic**: no staff until the tag is seen (strong hit), then follow the track; when the track
-is lost, look nearby (starts soon, close, similar speed); if nothing is found, back to searching
-for the tag. Full agreed plan + decisions: WORKLOG "2026-10-26: step 4 plan agreed" (confirmation
-0.065 anywhere, normal hit 0.037 only in context, focus = colour only, overlap/centre/standstill
-handlers only where needed and only for the green target, several targets allowed, gaps filled
-only in the saved CSV at the end, 3-number scoring). Score charts: real tag = rare tall spikes on a
-moving person; false hits = many medium bumps on still people just under 0.065
-(`docs/figures/step3c_score_over_time.png`).
-New step 4 work is done in `approach2/review_pending/` (not committed) until the user accepts it.
+Step 4 live following (accepted by the user 2026-10-26, moved out of `review_pending/`, which is gone):
+- `src/staffid2/follow.py` (Follower, fill_gaps, main_output, score), `scripts/follow_staff.py`
+  (run + score on the saved tag scores, ~1 s -> `outputs/follow/`), `scripts/follow_viewer.py`
+  (user tool: live / saved views, events, suspects). Docs: `docs/step4_rules.md` (full rules +
+  settings), `docs/tag_recognition_&_staff_tracking.md` (short rules, the user's reference),
+  `docs/step4_follow.md` (results, what changed and why).
+- Live logic: no staff until a confirmation (> 0.065); follow the track ID; when it ends, a
+  movement guess (new tracks only, switchable while uncertain) + suspects (everyone near the loss
+  point incl. old tracks, 5 s; a hit on a moving suspect moves the target, latest hit wins);
+  main CSV = target with the latest real confirmation; gaps <= 2.5 s filled only at the end.
+  Colours: green confirmed, light green uncertain (also hit-made green while suspects are open),
+  red cross lost, yellow suspect, orange hit in the last 1 s.
+- Sample result: first confirmation 385; live 95.1 % right when it says staff, 80.8 % right after
+  the first confirmation; saved 92.2 %. Rules were found on this one video's failures (optimistic).
+- Not built: centre-blind-spot and standing-still special cases (not needed so far).
+- **Open problem: `conf_thr` 0.065 = highest non-staff score in this video** (needs 4.6 robustness).
 
-Next (agreed order): 4.1 rules doc -> 4.2 basic follower (`follow.py`, frame by frame on the saved
-scores) -> 4.3 follow layer in the viewer -> 4.4 score it -> 4.5 special cases where needed ->
-4.6 robustness -> 5 evaluation (also approach 1 on the key) -> 6 `detect_staff.py` CLI (live
-speed-ups), docs.
+Next: 4.6 robustness / threshold -> 6 `detect_staff.py` CLI (the user wants its videos and CSVs in a
+`result/` folder, separate from `outputs/`; needs the detection + tracking loop of
+`scripts/track_rectified.py` as reusable code in `src/staffid2/`) -> 5 evaluation (also approach 1
+on the key) -> docs. Commit the step 4 move only when the user asks.
 
 ### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written
