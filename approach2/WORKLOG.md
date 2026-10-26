@@ -217,3 +217,122 @@ squash, contrast, bar profile, coverage per sighting) and `docs/step3a_tag_surve
 - Not labelled, by the user's choice: seated period 0-274 (too blurry to see the tag) and after
   942 (same movement as the earlier hoodie passes, judged already covered). Frames 819-821 use the
   user's manual staff box from the answer key.
+
+## 2026-10-25: step 3a tag survey (measurements + doc)
+
+- Committed first (user asked): tools, user tag labels, docs as 3 commits (81ebe6a, 104ab71, f5d6919).
+- `src/staffid2/tag_measure.py`: shirt band vs inside, best-row bar profile + dip count, edge
+  sharpness, tag rotation/length/thickness from 2nd moments of pixels differing from the shirt.
+  Shared so 3b can measure synthetic tags the same way.
+- `scripts/tag_survey.py` -> `outputs/tag_survey/{tag_measurements,sightings,ranges}.csv` and
+  `docs/figures/step3a_{gallery,contrast,profiles,size_vs_tilt,coverage}.png` (1 s).
+- Fixed after the first run: row-averaged profile smeared rotated bars (hoodie median 0 dips);
+  gradient bar angle gave +-85 deg (outer edges dominate). Now best single row + moment-based
+  angle; box w/h replaced by rotation-free length/thickness.
+- Results: tag length 5.3-19.2 px (median 12.8), thickness 3.5-10.4, ratio 0.30-0.86, rotation
+  -38..+59 deg even in rectified crops. Light shirt: card invisible (tag - shirt -17..+27), only
+  bars show; dark hoodie: shirt clipped to 0, card +60..+139. Bars resolved in 48/63 boxes;
+  unresolved = small (<10 px), rotated (>30 deg) or fast (28-35 px/frame). Length falls with
+  tilt (19 px at 20 deg -> 5-8 px at 60 deg). Coverage: central corridor + one bottom-left spot;
+  repeat crossings at the same places.
+- Doc: `docs/step3a_tag_survey.md` incl. suggested 3b augmentation ranges (length 4-24 px,
+  ratio 0.25-0.9, rotation +-70 deg, light/dark/mid shirts, card-invisible case, blur matched by
+  measuring synthetic tags).
+- Next: 3b synthetic tag generator (from the brief's tag photo + a drawn tag).
+
+## 2026-10-25/26: step 3b synthetic tags (built by Claude unattended; checked by the user 2026-10-26)
+
+- Built overnight in `review_pending/` at the user's request, reviewed by the user, then moved here
+  (2026-10-26). The user confirmed the automatically found tag box is the tag.
+- `src/staffid2/tag_source.py`: the brief PDF's embedded JPEGs are read directly (no PDF
+  library). Only image 0 (green-shirt photo, 218x233) is used; images 1-2 are frames of the
+  sample video (would leak test data). Tag = white unsaturated blob, extended over rows/columns
+  that are not green shirt (margin 8) -> box 36x22 px. Layout measured automatically
+  (`outputs/tag_source/layout.json`): aspect 1.64, black band top 23 %, 3 bars hanging to 64 %
+  of the height, outline 0.045. Explains 3a's two looks (dark comb on a light shirt where the
+  card blends in; white comb on the hoodie where band and bars blend in).
+  `photo_albedo.png` = the photo's tag as 0 (ink) .. 1 (white); `drawn_albedo.png` = a clean tag
+  drawn from the layout (used for the templates).
+- `src/staffid2/synth_tag.py`: renderer (8x supersampling, blur, motion blur, noise, JPEG);
+  ranges from 3a's `ranges.csv`, widened. 600 random tags pasted on other people's chests
+  (`data/tag_crops/neg`), look chosen first then a torso of matching brightness, measured with
+  `tag_measure` and compared with the 63 real tags. Four range fixes (thinner ratio, darker hoodie
+  card, ink = 5-50 % of card, look-first torso). Real values inside the synthetic 1-99 % range for
+  every measure (card-minus-shirt 92 %); synthetic still a bit rounder (median 0.63 vs 0.49).
+  The 600 are only a check of the generator (the classifier they were meant for was dropped).
+- `../.venv/bin/python scripts/synth_tags.py` (3 s) -> `outputs/tag_source/`,
+  `outputs/synth_tags/{synth_measurements,compare}.csv`, `docs/figures/step3b_{source,gallery,compare}.png`.
+  Same seed (0) every run. Doc: `docs/step3b_synth_tags.md`.
+
+## 2026-10-25/26: step 3c NCC tag detector (built by Claude unattended; reviewed by the user)
+
+- `src/staffid2/ncc.py`: 140 templates (drawn tag; lengths 6/8/11/14/18 px, ratios 0.3/0.5,
+  angles -60..60 step 20, looks light + dark), made in memory each run (no randomness, 0.04 s).
+  Search only the chest area of the upright crop (x 25-80 %, y 10-70 %), OpenCV TM_CCOEFF_NORMED,
+  windows with std < 6 ignored. Score ("verify") = NCC of the best tag template - best NCC of its
+  two "no bars" blocks (gaps filled dark / white) at the same spot. Range in theory -2..2; in
+  practice almost all boxes are -0.13..0.07.
+- `../.venv/bin/python scripts/ncc_eval.py` (~3 min): 9 configurations on 158 sighting frames
+  vs 3859 crops of other people; threshold set on even track IDs (2 % pass), reported on odd.
+  Chosen `no_mid`: threshold 0.037, finds 15.8 % of visible-tag frames, 9/11 sightings, match on
+  the user's tag box 10/63, false hits 1.0 %. raw NCC 6.3 % (a white logo on a black polo scored
+  0.97); mid-tone templates made 57/69 false hits (dropped; risk for a grey-shirted staff member).
+  Outputs `outputs/ncc_eval/`, `docs/figures/step3c_{scores,examples}.png`. Doc: `docs/step3c_ncc.md`.
+- Correction: the earlier note "1.6 ms per crop per core" was wall time with 7 processes; on one
+  core matching takes ~10 ms per crop (~160 ms per frame of 16 people).
+
+## 2026-10-26: tag scores for every tracked box + viewer + live scoring (first version)
+
+- `src/staffid2/tag_score.py`: `gray_crops` + `score_crops` (batch, one process per core) and
+  `FrameScorer` (live: one frame's boxes at a time, nothing from other frames; optional threads).
+- `../.venv/bin/python scripts/score_tracks.py` (40 s, 7 processes) -> `data/tag_scores/ncc_track_scores.csv`:
+  score for all 20 863 tracked boxes. Each score uses only its own frame; the whole video is done
+  in one go only so the viewer can browse instantly. Over all boxes: other people median -0.003,
+  max 0.065; staff max 0.107. Frames with a hit (>= 0.037): 292; with a score > 0.065: 11
+  (385, 432, 468, 470, 471, 506, 507, 558, 1019, 1156, 1201), all on the staff member.
+- `scripts/tag_score_viewer.py` (user tool): a/d frames, every tracked box coloured by score
+  (green > 0.065, orange >= 0.037, grey, dark = negative), matched spot outlined, selected box's
+  crop + "seen / tag / block dark / block white" with live NCC values, strips of the best and the
+  staff box's score over the whole video, jumps to strong/hit frames. Does not decide or follow
+  the staff member (the cyan box is the answer key, for comparison). Live recompute matches the
+  CSV to 5e-5.
+- `scripts/score_tracks_live.py`: frame-by-frame scoring with timing against the 25 fps budget;
+  `../.venv/bin/python scripts/score_tracks_live.py --compare` (102 s). Scoring per frame (median 16
+  boxes): 1 thread 153 ms (6.5 fps), **4 threads 67-75 ms (13-14 fps, default)**, 7 threads 119 ms
+  (slower: Python parts of the matcher compete for the GIL). Over the 40 ms budget in 1335/1341
+  frames; detection + tracking (~48 ms on MPS) come on top. Same scores as the batch run (max
+  difference 5e-5). Not optimised yet (ideas: template sizes from the crop size, every 2nd-3rd frame,
+  re-check seated people less often).
+- Moved from `review_pending/` after the user's review: the code, scripts, docs and figures of
+  3b, 3c, the scores and the viewer; re-run from here gave identical outputs. Still under review
+  in `review_pending/`: step 4 linking (anchors + forward/backward following), which the user did
+  not accept (it fills the staff track before the tag is seen; the user wants live logic).
+- `scripts/score_charts.py` -> `docs/figures/step3c_score_over_time.png`, `step3c_score_zoom.png`:
+  staff score over time vs two seated non-staff tracks (63: 47 hits, max 0.063; 292: 25 hits in
+  66 frames, max 0.060). Real tag = rare tall 1-3 frame spikes on a moving person; false hits =
+  many medium bumps on a still person, just below the 0.065 line. Over all tracks: staff hit runs
+  1-2 frames (max 5), others' hits spread over many seconds. A "drop 1-2 frame spikes" filter
+  would remove the real hits.
+
+## 2026-10-26: step 4 plan agreed (user's live logic)
+
+- First step 4 version (anchors + following backward and forward) not accepted: it fills in the
+  staff member before the tag is seen. Kept in `review_pending/` only until replaced.
+- Agreed design (user's idea, adjusted after the score charts):
+  - Two thresholds: confirmation (0.065) anywhere = green target; normal hit (0.037) only counts
+    in context (near a lost target, or on a suspect after a split). "Focus" = colour only at first.
+  - Follow the green target's track; when lost, the generic continuation search (starts soon,
+    close, similar speed); nothing found within a time limit -> back to searching.
+  - Special losses, added only where the evaluation shows a need: (1) overlap / ID swap, only for
+    the green target: after the split all boxes involved become suspects until a tag decides;
+    (2) centre blind spot: accept a newborn track on the far side in the direction of travel;
+    (3) standing still / changing clothes: hold the last known position.
+  - Several green targets allowed; finding one never drops another.
+- Decisions: (1) main CSV `frame,staff_present,x,y` = the most recently confirmed target; a second
+  CSV lists every green target per frame. (2) Gaps are filled only in the saved CSV at the end
+  (straight-line interpolation, or deduced from the surroundings, between two sightings of the
+  same target); the live view is not filled. (3) Scored as: time to first confirmation,
+  correctness when the output says "staff" (right person), coverage after the first confirmation.
+  (4) Focus = colour only in the first version.
+- New work happens in `review_pending/` until the user accepts it. Next: 4.1 rules doc (states,
+  settings) for the user to check before any code.

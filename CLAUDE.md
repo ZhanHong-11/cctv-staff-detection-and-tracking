@@ -107,9 +107,11 @@ Layout (no PLAN.md / JOURNEY.md / README.md yet; `WORKLOG.md` is the journal, re
   `open_writer`), `fisheye_view.py` (view makers + mapping boxes back), `detect.py` (YOLO on views
   + map back + NMS), `track.py` (ByteTrack wrapper, copied from approach 1), `labeling.py`
   (answer-key logic), `drawing.py` (`draw_box`, `table_video`: draw any CSV of boxes onto the video),
-  `person_crop.py` (person-centred rectified crop: aim/tilt computed from the box).
+  `person_crop.py` (person-centred rectified crop: aim/tilt computed from the box),
+  `tag_measure.py`, `tag_source.py`, `synth_tag.py`, `ncc.py`, `tag_score.py` (step 3).
 - Step 3a scripts: `staff_crops.py` (staff + negative crops, contact sheets), `label_tag.py`
-  (user tool: tag sighting ranges + tag boxes -> `ground_truth/tag_*.{json,csv}`).
+  (user tool: tag sighting ranges + tag boxes -> `ground_truth/tag_*.{json,csv}`), `tag_survey.py`
+  (measurements via `src/staffid2/tag_measure.py` + figures).
 - `scripts/`: `yolo11_demo.py` (plain YOLO), `fisheye_unwarp.py` (pictures of each view method),
   `compare_methods.py` (+ `docs/compare_methods.md`), `yolo11_rectified_demo.py`,
   `track_rectified.py` (-> `data/track_rectified/tracks.csv`, committed because the labels refer
@@ -131,16 +133,38 @@ Done:
   `staff_labels.json`. Final: track 1167, interp 165, manual 9 frames; present 0–1340.
   Fill rule: gaps <= 2.5 s straight-line interpolated; the tool makes the user check fills >= 0.4 s.
 
-Step 3 in progress (see WORKLOG 2026-10-25): plan = NCC + small classifier on person crops, trained
-only on the brief's tag + drawn tag with augmentation; video tags labelled by the user are for
-measuring and testing only. 3a tools built; waiting for the user's labelling with `label_tag.py`.
+Step 3 tag recognition (see WORKLOG 2026-10-25/26): NCC only (the user dropped the classifier).
+Templates come only from the brief's tag photo; video tags labelled by the user are for measuring
+and testing only.
+- [x] 3a user labelled 11 sightings / 63 tag boxes; measurements in `docs/step3a_tag_survey.md`.
+- [x] 3b tag cut automatically from the brief's photo (`tag_source.py`, user confirmed the box),
+  generator `synth_tag.py` checked against real tags (`docs/step3b_synth_tags.md`).
+- [x] 3c NCC detector `ncc.py` (`no_mid`: light + dark looks, score = tag NCC - "no bars" block
+  NCC); hit threshold 0.037 finds 16 % of visible-tag frames, 9/11 sightings, 1 % false hits
+  (`docs/step3c_ncc.md`). Open risk: no mid-tone (grey shirt) templates.
+- [x] Scores for all tracked boxes (`score_tracks.py` -> `data/tag_scores/`), viewer
+  `tag_score_viewer.py` (user tool), live scorer `score_tracks_live.py` (first version, not fast
+  enough for 25 fps yet: ~10 ms per crop per core).
+- Scripts added: `synth_tags.py`, `ncc_eval.py`, `score_tracks.py`, `score_tracks_live.py`, `score_charts.py`,
+  `tag_score_viewer.py`; src: `tag_source.py`, `synth_tag.py`, `ncc.py`, `tag_score.py`; paths
+  `BRIEF_PDF`, `TRACKS_CSV`, `ANSWER_KEY`, `TAG_BOXES`, `TAG_SIGHTINGS`, `TAG_SCORES` in `common.py`.
 
-Next (agreed order): **3 tag recognition** -> 4 linking tracks into the staff
-track (can reuse `labeling.suggest`'s start-time/distance/speed logic) -> 5 evaluation against the
-approach 2 answer key (also score approach 1 on it) -> 6 `detect_staff.py` CLI, robustness, docs.
-Suggested first move for step 3: cut the staff member's box from every frame using the answer key
-(and other people as negatives) and look at how often/clearly the tag shows in the original vs
-rectified views; that decides between template rules (approach 1 style) and a trained classifier.
+Step 4 linking: a first version (anchors = score > 0.065, then following forward AND backward,
+93.5 % of frames right) is in `approach2/review_pending/` and was NOT accepted. **The user wants
+live logic**: no staff until the tag is seen (strong hit), then follow the track; when the track
+is lost, look nearby (starts soon, close, similar speed); if nothing is found, back to searching
+for the tag. Full agreed plan + decisions: WORKLOG "2026-10-26: step 4 plan agreed" (confirmation
+0.065 anywhere, normal hit 0.037 only in context, focus = colour only, overlap/centre/standstill
+handlers only where needed and only for the green target, several targets allowed, gaps filled
+only in the saved CSV at the end, 3-number scoring). Score charts: real tag = rare tall spikes on a
+moving person; false hits = many medium bumps on still people just under 0.065
+(`docs/figures/step3c_score_over_time.png`).
+New step 4 work is done in `approach2/review_pending/` (not committed) until the user accepts it.
+
+Next (agreed order): 4.1 rules doc -> 4.2 basic follower (`follow.py`, frame by frame on the saved
+scores) -> 4.3 follow layer in the viewer -> 4.4 score it -> 4.5 special cases where needed ->
+4.6 robustness -> 5 evaluation (also approach 1 on the key) -> 6 `detect_staff.py` CLI (live
+speed-ups), docs.
 
 ### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written
