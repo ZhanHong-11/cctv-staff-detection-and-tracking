@@ -10,6 +10,10 @@ Outputs:
   data/track_rectified/track_summary.csv  one row per track: first/last frame, frames tracked, gaps
   outputs/track_rectified.mp4             video with track IDs drawn from tracks.csv, to see where tracks break
 
+The per-frame loop is staffid2.pipeline.PersonTracks (also used by staff_detector.py). Since that
+move the boxes are rounded from float64 instead of float32: a re-run can differ by 0.1 px on a few
+boxes. Do NOT re-run on the sample: the answer key refers to the saved tracks.csv.
+
 Usage (from approach2/):
     ../.venv/bin/python scripts/track_rectified.py
     ../.venv/bin/python scripts/track_rectified.py --video <file> --track-buffer 75
@@ -24,14 +28,13 @@ from pathlib import Path
 import cv2
 import numpy as np
 import pandas as pd
-from ultralytics import YOLO
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from staffid2.common import MODELS_DIR, ROOT, SAMPLE_VIDEO, setup_logging  # noqa: E402
-from staffid2.detect import detect, pick_device, yolo_size  # noqa: E402
+from staffid2.detect import pick_device  # noqa: E402
 from staffid2.drawing import id_colour, table_video  # noqa: E402
-from staffid2.fisheye_view import lens_focal, native_view_size, rectified_maker  # noqa: E402
-from staffid2.track import PersonTracker, TrackParams  # noqa: E402
+from staffid2.pipeline import PersonTracks, ViewParams  # noqa: E402
+from staffid2.track import TrackParams  # noqa: E402
 
 
 def summarise(df: pd.DataFrame) -> pd.DataFrame:
@@ -85,37 +88,28 @@ def main() -> None:
     n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     log.info("video: %s  %dx%d  %.1f fps  %d frames", args.video, w, h, fps, n_frames)
 
-    radius = float(np.hypot(w, h) / 2)
-    f_fish = lens_focal(radius, args.fov_deg)
-    size = native_view_size(f_fish, args.view_fov_deg)
-    maker = rectified_maker(w, h, (w / 2, h / 2), f_fish, args.n_views, args.tilt_deg, args.view_fov_deg, size)
-    log.info("rectified: %d views of %dx%d px", args.n_views, size, size)
-
-    model, tracker = YOLO(args.weights), PersonTracker(tp)
+    vp = ViewParams(fov_deg=args.fov_deg, n_views=args.n_views, tilt_deg=args.tilt_deg,
+                    view_fov_deg=args.view_fov_deg, conf=args.conf, nms_iou=args.nms_iou)
+    people = PersonTracks(args.weights, w, h, device, vp, tp)     # the loop body, shared with staff_detector.py
+    log.info("rectified: %d views of %dx%d px", args.n_views, people.size, people.size)
     data_out, video_out = Path(args.data_out), Path(args.video_out)
     data_out.mkdir(parents=True, exist_ok=True)
 
-    rows, n_dets, imgsz, idx, t0 = [], 0, None, 0, time.time()
+    parts, idx, t0 = [], 0, time.time()
     while True:
         ok, frame = cap.read()
         if not ok:
             break
-        views = maker(frame)
-        imgsz = imgsz or yolo_size(views)
-        dets, _, _ = detect(model, views, imgsz, args.conf, args.nms_iou, device)
-        n_dets += len(dets)
-        tracks = tracker(dets)
-        for x1, y1, x2, y2, tid, conf in tracks:
-            rows.append((idx, int(tid), x1, y1, x2, y2, conf))
+        parts.append(people(idx, frame))
         if idx % 100 == 0:
-            log.info("frame %d/%d  detections=%d  tracked=%d", idx, n_frames, len(dets), len(tracks))
+            log.info("frame %d/%d  tracked=%d", idx, n_frames, len(parts[-1]))
         idx += 1
     cap.release()
     elapsed = time.time() - t0
+    n_dets = people.n_dets
 
-    df = pd.DataFrame(rows, columns=["frame", "track_id", "x1", "y1", "x2", "y2", "conf"])
-    df["x"], df["y"] = (df.x1 + df.x2) / 2, (df.y1 + df.y2) / 2
-    df.round(1).to_csv(data_out / "tracks.csv", index=False)
+    df = pd.concat(parts, ignore_index=True)
+    df.to_csv(data_out / "tracks.csv", index=False)
     summary = summarise(df)
     summary.to_csv(data_out / "track_summary.csv")
 

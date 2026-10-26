@@ -386,3 +386,24 @@ squash, contrast, bar profile, coverage per sighting) and `docs/step3a_tag_surve
   byte-identical to before the move.
 - Next: the confirmation threshold (fitted on this video) and the `detect_staff.py` CLI (results in
   a `result/` folder, as the user asked).
+
+## 2026-10-26: step 6 `staff_detector.py` (the command for a new video)
+
+- Committed step 4 as `48cd1c7` (the user asked). `ground_truth/tag_labels.json` was left out: only
+  its "saved" time changed (the user opened `label_tag.py`), no labels changed.
+- Threshold check before building (scratchpad runs of `follow_staff.py --conf-thr`): 0.055 / 0.06 ->
+  first "confirmation" at frame 45 on a wrong person, 43 / 40 % right; 0.065 ... 0.10 -> identical
+  result (one good confirmation at 385 is enough); > 0.107 -> nothing reported. "Moving only" does
+  not separate: the highest non-staff score (0.0648) is on a walking person. The user wants an
+  adaptive threshold but it cannot be tested here: no change for now.
+- New: `src/staffid2/pipeline.py` (`PersonTracks` = the detection + ByteTrack loop of
+  `track_rectified.py` as reusable code; `tag_bank`), `drawing.dashed_rect` (moved from the follow
+  viewer) and `drawing.draw_follow`, `staff_detector.py` (name chosen by the user) -> `result/<video>/`
+  (the user wants results apart from `outputs/`; `result/**/*.mp4` git-ignored).
+- `../.venv/bin/python staff_detector.py --answer-key ground_truth/ground_truth.csv`: 1341 frames in
+  173 s (7.7 fps; people 55 ms, tags 73 ms, follow 0.4 ms per frame). Same tracks as `tracks.csv`
+  and the same result as `follow_staff.py`: first confirmation 385, live 95.1 % / 80.8 %, saved 92.2 %.
+- Fixed on the way: boxes kept as float32 moved 2 of 1911 tag scores (crop shifted by a hair);
+  now float64 like the CSV, scores identical.
+- `scripts/track_rectified.py` now calls `PersonTracks` (tested into the scratchpad: same 223 tracks).
+- Doc: `docs/step6_staff_detector.md`. Next: the user tries it; adaptive threshold idea; evaluation (5).

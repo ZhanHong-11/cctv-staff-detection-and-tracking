@@ -166,10 +166,16 @@ Step 4 live following (accepted by the user 2026-10-26, moved out of `review_pen
 - Not built: centre-blind-spot and standing-still special cases (not needed so far).
 - **Open problem: `conf_thr` 0.065 = highest non-staff score in this video** (needs 4.6 robustness).
 
-Next: 4.6 robustness / threshold -> 6 `detect_staff.py` CLI (the user wants its videos and CSVs in a
-`result/` folder, separate from `outputs/`; needs the detection + tracking loop of
-`scripts/track_rectified.py` as reusable code in `src/staffid2/`) -> 5 evaluation (also approach 1
-on the key) -> docs. Commit the step 4 move only when the user asks.
+Step 6 CLI: **`approach2/staff_detector.py`** (the user's name; not `detect_staff.py`):
+`../.venv/bin/python staff_detector.py --video <file>` -> `result/<video name>/` (`staff.csv` =
+`frame,staff_present,x,y`, `staff_live.csv`, `detail.csv`, `targets.csv`, `events.csv`,
+`tracks_scored.csv`, `run.json`, `staff.mp4`). One live-style pass: `pipeline.PersonTracks`
+(rectified YOLO + ByteTrack, also used by `track_rectified.py`) -> `FrameScorer` -> `Follower`.
+Sample: 7.7 fps, same tracks and same result as `follow_staff.py`. Doc `docs/step6_staff_detector.md`.
+Threshold check: < 0.065 confirms wrong people; 0.065-0.10 identical; the user wants an adaptive
+threshold later (cannot be tested on one video), no change for now.
+
+Next: the user tries `staff_detector.py`; adaptive threshold; 5 evaluation (also approach 1 on the key); docs.
 
 ### Approach 1 (`approach1_template_matching/`, finished)
 - [x] venv created, video and PDF analyzed, PLAN.md written

@@ -9,3 +9,4 @@ logs/
 **/outputs/**/*.mp4
 *.pt
 runs/
+**/result/**/*.mp4

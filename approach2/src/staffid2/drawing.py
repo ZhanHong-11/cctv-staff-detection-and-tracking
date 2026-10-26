@@ -41,6 +41,19 @@ def draw_box(img: np.ndarray, xyxy, color: tuple, text: str | None = None, thick
         cv2.putText(img, text, org, FONT, font_scale, color, max(1, thickness // 2))
 
 
+def dashed_rect(img: np.ndarray, x1: int, y1: int, x2: int, y2: int, col, th: int, dash: int, gap: int) -> None:
+    """Dashed rectangle (in place): dash px drawn, gap px skipped along each edge."""
+    for (a, b) in (((x1, y1), (x2, y1)), ((x2, y1), (x2, y2)), ((x2, y2), (x1, y2)), ((x1, y2), (x1, y1))):
+        n = max(1, int(np.hypot(b[0] - a[0], b[1] - a[1]) // (dash + gap)))
+        for k in range(n + 1):
+            t0, t1 = k * (dash + gap), k * (dash + gap) + dash
+            L = max(np.hypot(b[0] - a[0], b[1] - a[1]), 1)
+            if t0 >= L:
+                break
+            p = lambda t: (int(a[0] + (b[0] - a[0]) * min(t, L) / L), int(a[1] + (b[1] - a[1]) * min(t, L) / L))
+            cv2.line(img, p(t0), p(t1), col, th)
+
+
 def draw_header(img: np.ndarray, text: str, color: tuple = YELLOW) -> None:
     """Text in the top-left corner (in place), e.g. 'frame 700  persons 15'."""
     cv2.putText(img, text, (10, 25), FONT, 0.7, color, 2)
@@ -100,3 +113,46 @@ def table_video(video: str | Path, table: pd.DataFrame, out: str | Path,
     cap.release()
     wr.release()
     return written
+
+
+# ---------------------------------------------------------------- staff following (step 4 / 6)
+ORANGE, LIGHT_GREEN = (0, 150, 255), (150, 240, 150)
+STATE_COLOR = {"CONFIRMED": GREEN, "UNCERTAIN": LIGHT_GREEN, "FILLED": WHITE, "LOST": RED}
+
+
+def draw_follow(img: np.ndarray, boxes: pd.DataFrame, targets: pd.DataFrame | None, main_target: int | None,
+                hit_recent: set[int], hit_now: set[int]) -> None:
+    """Draw one frame of the staff following (in place).
+    boxes: this frame's tracked boxes (track_id, x1..y2); targets: this frame's target rows
+    (target, state, track_id, x, y, x1..y2, source?, suspects?); main_target: the target the
+    main CSV reports (None = staff not present); hit_recent / hit_now: tracks with a tag hit in
+    the last focus_time frames / in this frame.
+    Colours: grey others, orange hit (recent), yellow suspect, green confirmed, dashed light green
+    uncertain, dotted white filled, red cross lost; "STAFF" on the reported target."""
+    suspects: set[int] = set()
+    if targets is not None and "suspects" in targets:
+        for s in targets.suspects.dropna():
+            suspects |= {int(x) for x in str(s).split()}
+    for _, r in boxes.iterrows():
+        tid = int(r.track_id)
+        col = YELLOW if tid in suspects else ORANGE if tid in hit_recent else GREY
+        cv2.rectangle(img, (int(r.x1), int(r.y1)), (int(r.x2), int(r.y2)), col,
+                      2 if tid in suspects or tid in hit_now else 1)
+    if targets is None:
+        return
+    for _, t in targets.iterrows():
+        name, col = f"T{int(t.target)}", STATE_COLOR.get(t.state, WHITE)
+        if t.state == "LOST":
+            cv2.drawMarker(img, (int(t.x), int(t.y)), RED, cv2.MARKER_TILTED_CROSS, 22, 3)
+            cv2.putText(img, f"{name} lost", (int(t.x) + 12, int(t.y) - 8), FONT, 0.45, RED, 1)
+            continue
+        x1, y1, x2, y2 = (int(t[c]) for c in ("x1", "y1", "x2", "y2"))
+        if t.state == "CONFIRMED":
+            cv2.rectangle(img, (x1, y1), (x2, y2), GREEN, 3)
+        elif t.state == "UNCERTAIN":
+            dashed_rect(img, x1, y1, x2, y2, LIGHT_GREEN, 2, 8, 6)
+        else:
+            dashed_rect(img, x1, y1, x2, y2, WHITE, 1, 3, 4)
+        is_main = main_target is not None and int(t.target) == main_target
+        label = ("STAFF " if is_main else "") + f"{name} {t.state.lower()}"
+        cv2.putText(img, label, (x1, max(y1 - 6, 12)), FONT, 0.5, col, 2 if is_main else 1)

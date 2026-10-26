@@ -45,7 +45,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from staffid2.common import ROOT, ANSWER_KEY, SAMPLE_VIDEO, TAG_SCORES, setup_logging  # noqa: E402
-from staffid2.drawing import CYAN, GREEN, GREY, RED, WHITE, YELLOW  # noqa: E402
+from staffid2.drawing import CYAN, GREEN, GREY, RED, WHITE, YELLOW, dashed_rect  # noqa: E402
 
 WIN = "follow viewer"
 TOP, STRIP, BOTTOM = 44, 22, 36
@@ -86,18 +86,6 @@ class FrameReader:
             self.cache.pop(next(iter(self.cache)))
         self.cache[i] = f
         return f
-
-
-def dashed_rect(img: np.ndarray, x1: int, y1: int, x2: int, y2: int, col, th: int, dash: int, gap: int) -> None:
-    for (a, b) in (((x1, y1), (x2, y1)), ((x2, y1), (x2, y2)), ((x2, y2), (x1, y2)), ((x1, y2), (x1, y1))):
-        n = max(1, int(np.hypot(b[0] - a[0], b[1] - a[1]) // (dash + gap)))
-        for k in range(n + 1):
-            t0, t1 = k * (dash + gap), k * (dash + gap) + dash
-            L = max(np.hypot(b[0] - a[0], b[1] - a[1]), 1)
-            if t0 >= L:
-                break
-            p = lambda t: (int(a[0] + (b[0] - a[0]) * min(t, L) / L), int(a[1] + (b[1] - a[1]) * min(t, L) / L))
-            cv2.line(img, p(t0), p(t1), col, th)
 
 
 def runs(mask: np.ndarray) -> list[tuple[int, int]]:
