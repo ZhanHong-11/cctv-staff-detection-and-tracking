@@ -77,9 +77,9 @@ final pipeline should detect large global brightness changes and handle them.
 Labeling 1341 frames box by box by hand is slow, so the draft reuses the Step 2–3 tracks:
 1. Contact sheets of the moving tracks (`scripts/review_tracks.py`) were checked by eye to decide
    which tracks show the staff member, with the tag visible in many of them.
-2. The decisions are in **`approach1_groundtruth/staff_chain.json`**: which track follows the staff member
+2. The decisions are in **`groundtruth/staff_chain.json`**: which track follows the staff member
    over which frames, and why. Edit this file to correct the ground truth.
-3. `scripts/step1_build_ground_truth.py` turns it into **`approach1_groundtruth/ground_truth_draft.csv`**:
+3. `scripts/step1_build_ground_truth.py` turns it into **`groundtruth/ground_truth_draft.csv`**:
    `frame, staff_present, x, y, x1, y1, x2, y2, source, certain, pos_certain`.
    Frames between pieces are interpolated, since the staff member was seen crossing the image
    centre in every gap checked (`data/review/gaps.jpg`). It also writes

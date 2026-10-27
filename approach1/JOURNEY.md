@@ -1,5 +1,8 @@
 # How the solution evolved: what was tried, what broke, what changed
 
+> **Reference only.** Approach 1 was the first experiment and is no longer used or maintained;
+> the solution is in `../approach2/`.
+
 A summary of the whole process, from the first look at the video to the final pipeline. Each stage
 follows the same pattern: **what I tried → the problem → what that taught me → how the strategy
 changed.** The day-by-day record is in `WORKLOG.md`, the per-step details are in `docs/`, and every
@@ -63,7 +66,7 @@ above, just a head and shoulders, so YOLO still misses them there.
 - The seated white-shirt person in frames 0–274 is *probably* the staff member, but the tag can't be
   seen. → marked **uncertain**.
 
-**Change:** built the answer key (`approach1_groundtruth/`) from the tracks with my decisions written down
+**Change:** built the answer key (`groundtruth/`) from the tracks with my decisions written down
 and explained, so you can check them. Positions in long gaps turned out to be guesses (frame 575
 landed on empty floor), so I added a `pos_certain` column.
 

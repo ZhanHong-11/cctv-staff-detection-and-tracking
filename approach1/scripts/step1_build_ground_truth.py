@@ -1,4 +1,4 @@
-"""Step 1: build the per-frame ground-truth draft from approach1_groundtruth/staff_chain.json.
+"""Step 1: build the per-frame ground-truth draft from groundtruth/staff_chain.json.
 
 For each frame: staff_present, box (x1, y1, x2, y2), centre (x, y), source
 (track / interp / hold / none) and certain (whether it counts in the main metrics).

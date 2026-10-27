@@ -3,7 +3,7 @@
 Interview take-home task. Find the frames where the **staff member** (the person wearing a white
 name tag with black vertical bars) appears in an overhead fisheye video, and give their x,y position.
 The full brief is in `AI Evaluation Test Candidates.pdf`. Each approach has its own plan, e.g.
-`approach1_template_matching/PLAN.md`.
+`approach1/PLAN.md`.
 
 ## Input data
 - `AI Test Candidates.mp4`: 960×720, 25 fps, 1341 frames (about 54 s). Overhead fisheye view of an office.
@@ -37,9 +37,9 @@ CLAUDE.md                      this file (rules for all approaches)
 requirements.txt, .venv/       shared environment
 AI Test Candidates.mp4, *.pdf  the task and sample video
 models/                        shared YOLO weights (git-ignored) + approach 1's tag_templates/
-approach1_groundtruth/         answer key built in approach 1 (staff_chain.json -> ground_truth_draft.csv)
-approach1_template_matching/   finished: YOLO + rotations, ByteTrack, tag templates, track voting
-approach2/                     in progress: rectified fisheye views + ByteTrack; has its own
+approach1/                     FIRST EXPERIMENT, reference only (not used, not maintained): YOLO +
+                               rotations, ByteTrack, tag templates, track voting; draft key in groundtruth/
+approach2/                     THE SOLUTION: rectified fisheye views + ByteTrack + NCC tag + following;
                                USER-LABELLED answer key in approach2/ground_truth/ (use this one)
 ```
 Inside each approach folder:
@@ -179,16 +179,19 @@ Sample: 7.7 fps, same tracks and same result as `follow_staff.py`. Doc `docs/ste
 Threshold check: < 0.065 confirms wrong people; 0.065-0.10 identical; the user wants an adaptive
 threshold later (cannot be tested on one video), no change for now.
 
-Next: the user tries `staff_detector.py`; adaptive threshold; 5 evaluation (also approach 1 on the key); docs.
+Next: the user tries `staff_detector.py`; adaptive threshold; 5 evaluation (approach 1 on the key only if the user wants a reference comparison); docs.
 
-### Approach 1 (`approach1_template_matching/`, finished)
+### Approach 1 (`approach1/`, first experiment, REFERENCE ONLY)
+The user decided (2026-10-27) that approach 1 is no longer used or maintained: it is kept only as
+a record of the first experiment. Do not build on it or run it for the solution; approach 2 is the
+solution. (Copying ideas from it into approach 2 is still fine, as before.)
 - [x] venv created, video and PDF analyzed, PLAN.md written
-- [x] Step 1 ground truth **draft** (`approach1_groundtruth/`, needs checking by the user)
+- [x] Step 1 ground truth **draft** (`approach1/groundtruth/`, needs checking by the user)
 - [x] 2 person detection (YOLO11s + 4 rotations) · [x] 3 tracking (ByteTrack)
 - [x] 4A tag detection (templates + surround check) · [ ] 4B trained tag classifier (optional)
 - [x] 5 linking + voting · [x] 6 pixel coordinates · [x] 7 evaluation · [x] 8 CLI `detect_staff.py`
 - [x] 8 robustness test written up (`docs/step8_robustness.md`); led to `min_hit_rate = 0.03`
-- Main entry point: `cd approach1_template_matching && python detect_staff.py --video <file>`.
+- Main entry point: `cd approach1 && python detect_staff.py --video <file>`.
   Per-step explanations are in its `docs/`, and the story of what was tried is in its `JOURNEY.md`.
 - Result (sample video, certain frames): precision 1.0, recall 0.90, 95% of positions within 25 px,
   staff present frames 365–1246, ~2.5 min runtime.
@@ -197,6 +200,8 @@ Next: the user tries `staff_detector.py`; adaptive threshold; 5 evaluation (also
   settings tuned on one clip.
 - The approach 1 draft key was never checked; the user-labelled approach 2 key answers its open
   questions (seated person 0–274 is staff; staff present until the last frame, not leaving at ~1257).
+- Moved again 2026-10-27: `approach1_template_matching/` -> `approach1/`, `approach1_groundtruth/` ->
+  `approach1/groundtruth/` (`GT_DIR = ROOT / "groundtruth"`); step5_vote.py re-checked, same result.
 - Verified after the move into `approach1_template_matching/` (2026-10-24): `scripts/step5_vote.py`
   gives the same result as before.
 - Step 9 (the final 1–2 page write-up) is written **by the user**. Claude's job is to explain

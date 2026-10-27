@@ -77,3 +77,12 @@ python detect_staff.py --video "AI Test Candidates.mp4" --gt approach1_groundtru
 - `JOURNEY.md` added: what was tried, what failed, and how the strategy changed at each stage.
 - Project reorganised (in a side session): approach 1 moved into `approach1_template_matching/`. The sample video, `approach1_groundtruth/`, `requirements.txt` and `.venv` are shared at the project root, and `src/staffid/common.py` gained `PROJECT_ROOT`, `SAMPLE_VIDEO` and `GT_DIR`. Checked after the move: `scripts/step5_vote.py` gives the same result (2 staff chains, recall 0.897).
 - Approach 2 hasn't started; the options are listed in the root `CLAUDE.md`.
+
+## 2026-10-27: moved into `approach1/`
+- `approach1_template_matching/` -> `approach1/`, `approach1_groundtruth/` -> `approach1/groundtruth/`
+  (the user wanted all of approach 1 in one folder). `common.GT_DIR` is now `ROOT / "groundtruth"`;
+  README, JOURNEY, docs, scripts' docstrings and approach 2's `compare_methods.py` updated.
+- Checked: `../.venv/bin/python scripts/step5_vote.py` -> 2 staff chains, recall 0.897 on certain
+  frames, 95% of positions within 25 px: same as before the move.
+- The user decided approach 1 is no longer used: it is the first experiment, kept for reference
+  only. Notes added to README.md, JOURNEY.md, PLAN.md, the top-level README.md and CLAUDE.md.

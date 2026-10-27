@@ -1,5 +1,8 @@
 # FootfallCam AI Evaluation: Staff Identification Plan
 
+> **Reference only.** Approach 1 was the first experiment and is no longer used or maintained;
+> the solution is in `../approach2/`.
+
 > **Status (2026-10-24):** this is the original plan, written before any work. Steps 1–8 are
 > done; 4B (trained tag classifier) wasn't built, and step 9 (the write-up) is the user's. For
 > what was actually built and how it differs from this plan, see `README.md`, `JOURNEY.md` and

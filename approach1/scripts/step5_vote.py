@@ -1,6 +1,6 @@
 """Steps 5-7: link tracks, vote for staff, output per-frame staff presence + x,y, evaluate.
 
-Inputs:  data/step2_3/tracks.csv, data/step4/tag_scores.csv, approach1_groundtruth/ground_truth_draft.csv
+Inputs:  data/step2_3/tracks.csv, data/step4/tag_scores.csv, groundtruth/ground_truth_draft.csv
 Outputs: data/step5/chains.csv, data/step5/staff_frames.csv, data/step5/metrics.json
 """
 from __future__ import annotations

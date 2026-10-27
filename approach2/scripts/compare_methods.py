@@ -42,7 +42,7 @@ from staffid2.drawing import RED, draw_box, id_colour, label, mosaic  # noqa: E4
 from staffid2.fisheye_view import (ViewMaker, cylindrical_maker, lens_focal, native_view_size, plain_maker,  # noqa: E402
                             quadrants_maker, rectified_maker, rotations_maker)
 
-GT_CSV = PROJECT_ROOT / "approach1_groundtruth" / "ground_truth_draft.csv"
+GT_CSV = PROJECT_ROOT / "approach1" / "groundtruth" / "ground_truth_draft.csv"
 
 
 def build_methods(w: int, h: int, a: argparse.Namespace) -> dict[str, tuple[ViewMaker, float]]:

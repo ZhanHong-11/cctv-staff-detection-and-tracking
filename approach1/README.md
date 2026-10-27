@@ -1,11 +1,16 @@
 # Approach 1: YOLO + tag template matching + track voting
 
+> **Reference only, not for use.** This was the first experiment. It is kept as a record of what
+> was tried first (see `JOURNEY.md`) and is no longer maintained. The solution is in
+> [`../approach2/`](../approach2/) (`staff_detector.py`). Results below were measured against
+> approach 1's own draft answer key, not the user-labelled key in `../approach2/ground_truth/`.
+
 Finds the frames where the staff member (wearing the staff name tag) is present, and their x,y
 position, in a FootfallCam overhead fisheye video.
 
-Shared with other approaches (one level up): the sample video, the answer key in
-`../approach1_groundtruth/`, `../requirements.txt` and `../.venv`. Paths in `docs/` that mention
-`approach1_groundtruth/` refer to that shared folder.
+Shared with other approaches (one level up): the sample video, `../requirements.txt` and
+`../.venv`. Approach 1's draft answer key (made by Claude, never checked) is in `groundtruth/`;
+the user-labelled key used for scoring is `../approach2/ground_truth/ground_truth.csv`.
 
 ## Setup (once, from the project root)
 ```bash
@@ -17,11 +22,11 @@ The YOLO weights (`../models/yolo11s.pt`, `../models/yolo11n.pt`, shared by all 
 
 ## Run (from this folder)
 ```bash
-cd approach1_template_matching
+cd approach1
 source ../.venv/bin/activate
 python detect_staff.py --video "../AI Test Candidates.mp4"
 python detect_staff.py --video test.mp4 --fast --no-video   # quicker: nano model, no video output
-python detect_staff.py --video "../AI Test Candidates.mp4" --gt ../approach1_groundtruth/ground_truth_draft.csv  # with scoring
+python detect_staff.py --video "../AI Test Candidates.mp4" --gt groundtruth/ground_truth_draft.csv  # with scoring
 ```
 The scripts in `scripts/` find the sample video and answer key by themselves.
 Results go to `outputs/<video name>/`:

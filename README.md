@@ -6,17 +6,28 @@ fisheye video, and their x,y position. The task is in `AI Evaluation Test Candid
 ## Approaches
 | Folder | Idea | Status |
 |---|---|---|
-| [`approach1_template_matching/`](approach1_template_matching/) | YOLO on 4 rotations → ByteTrack → tag template matching with surround check → link track pieces and vote per person | finished: precision 1.0, recall 0.90, 95% of positions within 25 px (sample video, certain frames) |
-| [`approach2/`](approach2/) | rectified fisheye views (4 virtual cameras) → YOLO11s → ByteTrack; user-labelled answer key via a tracker-assisted click tool; tag recognition next | in progress (see `approach2/WORKLOG.md`) |
+| [`approach2/`](approach2/) | rectified fisheye views (4 virtual cameras) → YOLO11s → ByteTrack → NCC tag score (templates from the brief's tag photo) → live staff following (confirm, follow, movement guess, suspects) | **the solution**: use this one |
+| [`approach1/`](approach1/) | YOLO on 4 rotations → ByteTrack → tag template matching with surround check → link track pieces and vote per person | **first experiment, kept for reference only; not maintained, not for use** |
 
-Approach 1 has its own `README.md` (how to run), `JOURNEY.md` (what was tried and why) and `docs/`;
-approach 2 so far has `WORKLOG.md` and `docs/`.
+Approach 2 is documented in `approach2/WORKLOG.md` (journal) and `approach2/docs/` (one file per
+step). Approach 1 keeps its own `README.md`, `JOURNEY.md` and `docs/` as a record of what was tried
+first and why approach 2 replaced it.
+
+## Run the solution
+```bash
+cd approach2
+../.venv/bin/python staff_detector.py --video <file.mp4>              # -> result/<video name>/staff.csv, staff.mp4, ...
+../.venv/bin/python staff_detector.py --video <file.mp4> --no-video   # CSVs only, faster
+```
+The answer is `result/<video name>/staff.csv` (`frame,staff_present,x,y`); see
+`approach2/docs/step6_staff_detector.md`.
 
 ## Shared
 - `AI Test Candidates.mp4`: the sample video
 - `approach2/ground_truth/ground_truth.csv`: the answer key **labelled and checked by the user**
   (staff present in all 1341 frames). Use this one for scoring every approach.
-- `approach1_groundtruth/`: approach 1's earlier answer key, a draft made by Claude, never checked.
+- `approach1/groundtruth/`: approach 1's earlier answer key, a draft made by Claude, never checked
+  (reference only, do not use for scoring).
 - `models/`: shared YOLO weights (git-ignored, download on first run) and approach 1's tag templates
 - `requirements.txt` + `.venv/`: one Python environment for all approaches
 
