@@ -3,7 +3,7 @@
  "answer_key": "/Users/zhan/Documents/FootfallCam/approach2/ground_truth/ground_truth.csv",
  "margin": 0.15,
  "fov_deg": 180.0,
- "saved": "2026-10-25 22:53:38",
+ "saved": "2026-10-26 15:51:01",
  "labelled_by": "user (label_tag.py)",
  "note": "frames outside every sighting are NOT labelled (not 'no tag')",
  "sightings": [
