@@ -1,0 +1,182 @@
+frame,target,event,track_id,reason
+385,1,new target,181,tag confirmed on track 181: score 0.106
+394,1,lost,181,track 181 ended (last seen 393)
+394,1,suspects,181,near the loss point: 19 20 21 142 175
+400,1,continuation,192,"continues track 181: new track 192, 7 frames later, 188 px away (cost 0.95)"
+415,1,confirmed by hit,192,hit on followed track 192: score 0.047
+417,1,lost,192,track 192 ended (last seen 416)
+417,1,suspects,192,near the loss point: 3 7 9 19 20 21 142 175 182
+419,1,revived,192,track 192 came back after 3 frames
+428,1,suspects,192,near the loss point: 3 7 9 19 20 21 142 175 182 203
+432,1,confirmed,192,tag on track 192: score 0.074
+437,1,lost,192,track 192 ended (last seen 436)
+437,1,suspects,192,near the loss point: 3 7 9 19 20 142 182
+438,1,revived,192,track 192 came back after 2 frames
+440,1,lost,192,track 192 ended (last seen 439)
+443,1,suspects,192,near the loss point: 3 7 9 19 20 142 175 182
+444,1,continuation,208,"continues track 192: new track 208, 5 frames later, 166 px away (cost 0.91)"
+446,1,confirmed by hit,208,hit on followed track 208: score 0.040
+467,1,suspects,208,near the loss point: 3 7 9 19 20 142 175 182 220
+468,1,confirmed,208,tag on track 208: score 0.081
+470,1,confirmed,208,tag on track 208: score 0.103
+476,1,lost,208,track 208 ended (last seen 475)
+476,1,suspects,208,near the loss point: 20 21 24 63 175 227
+477,1,suspects,208,near the loss point: 20 21 24 63 175 203 227
+483,1,continuation,232,"continues track 208: new track 232, 8 frames later, 305 px away (cost 1.28)"
+485,1,switched,233,"continues track 208: new track 233, 10 frames later, 287 px away (cost 1.20)"
+496,1,lost,233,track 233 ended (last seen 495)
+496,1,suspects,233,near the loss point: 3 7 20 21 24 63 142 175 203 227
+497,1,revived,233,track 233 came back after 2 frames
+500,1,suspects,233,near the loss point: 3 7 20 21 24 63 142 175 182 203 227
+504,1,confirmed by hit,233,hit on followed track 233: score 0.054
+506,1,suspects,233,near the loss point: 3 7 20 21 24 63 142 175 182 203 227 238
+506,1,confirmed,233,tag on track 233: score 0.092
+514,1,lost,233,track 233 ended (last seen 513)
+514,1,suspects,233,near the loss point: 3 7 19 20 142 175
+516,1,revived,233,track 233 came back after 3 frames
+516,1,suspects,233,near the loss point: 3 7 19 20 142 175 182 240
+518,1,lost,233,track 233 ended (last seen 517)
+521,1,continuation,247,"continues track 233: new track 247, 4 frames later, 117 px away (cost 0.72)"
+549,1,suspects,247,near the loss point: 3 7 19 20 142 175 182 240 255
+558,1,confirmed,247,tag on track 247: score 0.094
+564,1,lost,247,track 247 ended (last seen 563)
+564,1,suspects,247,near the loss point: 20 21 24 63 227 240 255
+568,1,continuation,267,"continues track 247: new track 267, 5 frames later, 218 px away (cost 1.11)"
+570,1,lost,267,track 267 ended (last seen 569)
+573,1,continuation,270,"continues track 247: new track 270, 10 frames later, 285 px away (cost 1.20)"
+574,1,switched,271,"continues track 247: new track 271, 11 frames later, 302 px away (cost 1.23)"
+575,1,switched,270,"continues track 247: new track 270, 10 frames later, 285 px away (cost 1.21)"
+576,1,suspects,270,near the loss point: 20 21 24 63 227 240 255 267
+587,1,lost,270,track 270 ended (last seen 586)
+587,1,suspects,270,near the loss point: 3 20 21 24 63 142 227 238 240 255 267 272 275
+588,1,revived,270,track 270 came back after 2 frames
+595,1,lost,270,track 270 ended (last seen 594)
+596,1,revived,270,track 270 came back after 2 frames
+596,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 267 272 275
+597,1,lost,270,track 270 ended (last seen 596)
+598,1,revived,270,track 270 came back after 2 frames
+598,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 267 272 275 283
+614,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 264 267 272 275 283
+621,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 264 267 272 275 283 297
+625,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 264 267 272 275 283 297 302
+638,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 264 267 272 275 283 297 302 307
+642,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 264 267 272 275 283 297 302 307 309
+644,1,confirmed by hit,270,hit on followed track 270: score 0.044
+645,1,suspects,270,near the loss point: 3 7 20 21 24 63 142 227 238 240 255 264 267 272 275 283 297 302 307 309 310
+819,1,lost,270,track 270 ended (last seen 818)
+819,1,suspects,270,near the loss point: 3 7 142 271 347
+827,1,continuation,362,"continues track 270: new track 362, 9 frames later, 295 px away (cost 1.23)"
+830,1,suspects,362,near the loss point: 3 7 142 238 271 347
+847,1,switched,270,track 270 came back after 29 frames
+848,1,lost,270,track 270 ended (last seen 847)
+848,1,continuation,362,"continues track 270: new track 362, 9 frames later, 295 px away (cost 1.42)"
+851,1,suspects,362,near the loss point: 3 7 142 238 271 347 369
+857,1,suspects,362,near the loss point: 3 7 142 238 271 342 347 369
+859,1,confirmed by hit,362,hit on followed track 362: score 0.062
+866,1,lost,362,track 362 ended (last seen 865)
+866,1,suspects,362,near the loss point: 3 7 24 142 238 271 342 347 369 377 378
+871,1,continuation,383,"continues track 362: new track 383, 6 frames later, 133 px away (cost 0.77)"
+871,1,suspects,383,near the loss point: 3 7 20 24 142 238 271 342 347 369 377 378
+872,1,switched,384,"continues track 362: new track 384, 7 frames later, 220 px away (cost 1.05)"
+872,1,suspects,384,near the loss point: 3 7 20 24 142 238 271 342 347 369 377 378 383
+873,1,switched,383,"continues track 362: new track 383, 6 frames later, 133 px away (cost 1.46)"
+873,1,suspects,383,near the loss point: 3 7 20 24 142 238 271 342 347 369 377 378 383 384
+881,1,suspect hit,384,hit on suspect track 384: score 0.055 (moved 54 px in 25 frames)
+882,1,lost,384,track 384 ended (last seen 881)
+883,1,revived,384,track 384 came back after 2 frames
+890,1,suspect hit,142,hit on suspect track 142: score 0.052 (moved 205 px in 25 frames)
+906,1,lost,142,track 142 ended (last seen 905)
+915,1,continuation,423,"continues track 142: new track 423, 10 frames later, 135 px away (cost 0.82)"
+919,1,lost,423,track 423 ended (last seen 918)
+925,1,continuation,425,"continues track 142: new track 425, 20 frames later, 255 px away (cost 1.33)"
+925,1,suspect hit,369,hit on suspect track 369: score 0.052 (moved 374 px in 25 frames)
+930,1,suspects,369,near the loss point: 3 7 20 24 238 271 342 347 377 378 383 384 423 425
+940,1,suspects,369,near the loss point: 3 7 20 24 238 271 342 347 377 378 383 384 423 425 431
+946,1,lost,369,track 369 ended (last seen 945)
+946,1,suspects,369,near the loss point: 347 378 384 399
+952,1,continuation,435,"continues track 369: new track 435, 7 frames later, 219 px away (cost 1.04)"
+964,1,suspect hit,384,hit on suspect track 384: score 0.047 (moved 44 px in 25 frames)
+970,1,lost,384,track 384 ended (last seen 969)
+970,1,suspects,384,near the loss point: 3 7 347 378 399 435
+971,1,revived,384,track 384 came back after 2 frames
+974,1,suspects,384,near the loss point: 3 7 347 378 399 423 435
+974,1,suspect hit,435,hit on suspect track 435: score 0.061 (moved 143 px in 25 frames)
+975,1,suspects,435,near the loss point: 3 7 347 378 384 399 423 442
+982,1,lost,435,track 435 ended (last seen 981)
+982,1,suspects,435,near the loss point: 3 7 347 378 384 399 423 425 442
+988,1,continuation,448,"continues track 435: new track 448, 7 frames later, 174 px away (cost 0.90)"
+988,1,confirmed by hit,448,hit on followed track 448: score 0.040
+989,1,lost,448,track 448 ended (last seen 988)
+990,1,continuation,452,"continues track 448: new track 452, 2 frames later, 69 px away (cost 0.53)"
+998,1,lost,452,track 452 ended (last seen 997)
+999,1,continuation,452,"continues track 448: new track 452, 2 frames later, 69 px away (cost 0.57)"
+1014,1,suspects,452,near the loss point: 3 7 347 378 384 399 423 425 442 470 471
+1017,1,confirmed by hit,452,hit on followed track 452: score 0.044
+1018,1,suspects,452,near the loss point: 3 7 347 378 384 399 423 425 442 470 471 473
+1019,1,confirmed,452,tag on track 452: score 0.072
+1033,1,lost,452,track 452 ended (last seen 1032)
+1033,1,suspects,452,near the loss point: 347 378 384 448
+1035,1,suspects,452,near the loss point: 347 378 384 423 448 478
+1036,1,continuation,479,"continues track 452: new track 479, 4 frames later, 161 px away (cost 0.92)"
+1037,1,suspects,479,near the loss point: 347 378 384 423 448 473 478
+1048,1,suspects,479,near the loss point: 347 378 384 423 448 473 478 486 488
+1053,1,lost,479,track 479 ended (last seen 1052)
+1053,1,suspects,479,near the loss point: 3 7 347 378 384 423 425 448 473 478 486 488 492
+1059,1,continuation,500,"continues track 479: new track 500, 7 frames later, 23 px away (cost 0.41)"
+1059,1,confirmed by hit,500,hit on followed track 500: score 0.064
+1070,1,lost,500,track 500 ended (last seen 1069)
+1070,1,suspects,500,near the loss point: 3 7 347 378 384 423 425 448 473 478 486 488 492 501
+1073,1,revived,500,track 500 came back after 4 frames
+1074,1,lost,500,track 500 ended (last seen 1073)
+1077,1,continuation,508,"continues track 500: new track 508, 4 frames later, 114 px away (cost 0.71)"
+1114,1,confirmed by hit,508,hit on followed track 508: score 0.041
+1126,1,lost,508,track 508 ended (last seen 1125)
+1133,1,continuation,521,"continues track 508: new track 521, 8 frames later, 222 px away (cost 1.04)"
+1147,1,lost,521,track 521 ended (last seen 1146)
+1155,1,continuation,529,"continues track 521: new track 529, 9 frames later, 22 px away (cost 0.50)"
+1156,1,confirmed,529,tag on track 529: score 0.073
+1167,1,lost,529,track 529 ended (last seen 1166)
+1167,1,suspects,529,near the loss point: 3 7 425
+1169,1,suspects,529,near the loss point: 3 7 347 425
+1171,1,suspects,529,near the loss point: 3 7 347 384 425
+1176,1,continuation,553,"continues track 529: new track 553, 10 frames later, 242 px away (cost 1.09)"
+1180,1,switched,558,"continues track 529: new track 558, 14 frames later, 86 px away (cost 0.84)"
+1181,1,switched,553,"continues track 529: new track 553, 10 frames later, 242 px away (cost 1.15)"
+1181,1,suspects,553,near the loss point: 3 7 347 384 425 558
+1183,1,switched,559,"continues track 529: new track 559, 17 frames later, 171 px away (cost 1.10)"
+1184,1,switched,553,"continues track 529: new track 553, 10 frames later, 242 px away (cost 1.15)"
+1184,1,suspects,553,near the loss point: 3 7 347 384 425 558 559
+1199,1,confirmed by hit,553,hit on followed track 553: score 0.054
+1200,1,lost,553,track 553 ended (last seen 1199)
+1200,1,suspects,553,near the loss point: 3 7 63 347 384 425 478 556 558 559 569
+1201,1,revived,553,track 553 came back after 2 frames
+1201,1,confirmed,553,tag on track 553: score 0.075
+1206,1,lost,553,track 553 ended (last seen 1205)
+1206,1,suspects,553,near the loss point: 63 556
+1207,1,revived,553,track 553 came back after 2 frames
+1209,1,suspects,553,near the loss point: 63 556 569
+1212,1,lost,553,track 553 ended (last seen 1211)
+1213,1,revived,553,track 553 came back after 2 frames
+1214,1,lost,553,track 553 ended (last seen 1213)
+1214,1,suspects,553,near the loss point: 63 556 558 559 569
+1215,1,continuation,577,"continues track 553: new track 577, 2 frames later, 62 px away (cost 0.49)"
+1216,1,lost,577,track 577 ended (last seen 1215)
+1219,1,continuation,581,"continues track 553: new track 581, 6 frames later, 164 px away (cost 0.88)"
+1225,1,switched,586,"continues track 553: new track 586, 12 frames later, 177 px away (cost 0.97)"
+1226,1,switched,581,"continues track 553: new track 581, 6 frames later, 164 px away (cost 1.06)"
+1226,1,suspects,581,near the loss point: 63 556 558 559 569 586
+1243,1,suspects,581,near the loss point: 63 556 558 559 569 586 598
+1254,1,lost,581,track 581 ended (last seen 1253)
+1254,1,suspects,581,near the loss point: 63 293 425 556 558 559 569 586 598
+1255,1,revived,581,track 581 came back after 2 frames
+1256,1,lost,581,track 581 ended (last seen 1255)
+1261,1,suspects,581,near the loss point: 63 293 425 492 556 558 559 569 586 598
+1267,1,continuation,620,"continues track 581: new track 620, 12 frames later, 222 px away (cost 1.06)"
+1269,1,lost,620,track 620 ended (last seen 1268)
+1270,1,continuation,623,"continues track 581: new track 623, 15 frames later, 257 px away (cost 1.19)"
+1296,1,suspects,623,near the loss point: 63 293 425 492 556 558 559 569 586 598 634
+1300,1,lost,623,track 623 ended (last seen 1299)
+1305,1,revived,623,track 623 came back after 6 frames
+1306,1,suspects,623,near the loss point: 63 293 425 492 536 556 558 559 569 586 598 634 640
+1318,1,suspects,623,near the loss point: 63 293 425 492 536 556 558 559 569 586 598 634 640 647
+1327,1,suspects,623,near the loss point: 63 293 425 492 536 556 558 559 569 586 598 634 640 647 651

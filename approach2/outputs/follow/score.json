@@ -1,0 +1,416 @@
+{
+ "live": {
+  "first_confirmation": 385,
+  "said_staff": 812,
+  "right_when_said": 772,
+  "precision": 0.9507,
+  "frames_after_first": 956,
+  "covered_right_after_first": 772,
+  "coverage_after_first": 0.8075,
+  "right_all_frames": 0.5757,
+  "by_state": {
+   "CONFIRMED": {
+    "frames": 196,
+    "right": 196
+   },
+   "LOST": {
+    "frames": 144,
+    "right": 0
+   },
+   "UNCERTAIN": {
+    "frames": 616,
+    "right": 576
+   }
+  },
+  "wrong_stretches": [
+   {
+    "start": 483,
+    "end": 484,
+    "frames": 2,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     232
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 416.9
+   },
+   {
+    "start": 568,
+    "end": 569,
+    "frames": 2,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     267
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 314.4
+   },
+   {
+    "start": 574,
+    "end": 574,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     271
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 224.1
+   },
+   {
+    "start": 847,
+    "end": 847,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     270
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 278.7
+   },
+   {
+    "start": 871,
+    "end": 881,
+    "frames": 11,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     383,
+     384
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 231.8
+   },
+   {
+    "start": 883,
+    "end": 889,
+    "frames": 7,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     384
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 176.4
+   },
+   {
+    "start": 915,
+    "end": 918,
+    "frames": 4,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     423
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 405.1
+   },
+   {
+    "start": 964,
+    "end": 969,
+    "frames": 6,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     384
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 173.7
+   },
+   {
+    "start": 971,
+    "end": 973,
+    "frames": 3,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     384
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 159.0
+   },
+   {
+    "start": 1180,
+    "end": 1180,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     558
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 361.2
+   },
+   {
+    "start": 1183,
+    "end": 1183,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     559
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 390.9
+   },
+   {
+    "start": 1225,
+    "end": 1225,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     586
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 306.0
+   }
+  ]
+ },
+ "saved": {
+  "first_confirmation": 385,
+  "said_staff": 956,
+  "right_when_said": 881,
+  "precision": 0.9215,
+  "frames_after_first": 956,
+  "covered_right_after_first": 881,
+  "coverage_after_first": 0.9215,
+  "right_all_frames": 0.657,
+  "by_state": {
+   "CONFIRMED": {
+    "frames": 196,
+    "right": 196
+   },
+   "FILLED": {
+    "frames": 144,
+    "right": 109
+   },
+   "UNCERTAIN": {
+    "frames": 616,
+    "right": 576
+   }
+  },
+  "wrong_stretches": [
+   {
+    "start": 476,
+    "end": 484,
+    "frames": 9,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     208,
+     232
+    ],
+    "states": [
+     "FILLED",
+     "UNCERTAIN"
+    ],
+    "median_px": 254.2
+   },
+   {
+    "start": 564,
+    "end": 572,
+    "frames": 9,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     247,
+     267
+    ],
+    "states": [
+     "FILLED",
+     "UNCERTAIN"
+    ],
+    "median_px": 182.1
+   },
+   {
+    "start": 574,
+    "end": 574,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     271
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 224.1
+   },
+   {
+    "start": 847,
+    "end": 847,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     270
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 278.7
+   },
+   {
+    "start": 867,
+    "end": 889,
+    "frames": 23,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     362,
+     383,
+     384
+    ],
+    "states": [
+     "FILLED",
+     "UNCERTAIN"
+    ],
+    "median_px": 176.4
+   },
+   {
+    "start": 906,
+    "end": 924,
+    "frames": 19,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     142,
+     423
+    ],
+    "states": [
+     "FILLED",
+     "UNCERTAIN"
+    ],
+    "median_px": 263.2
+   },
+   {
+    "start": 964,
+    "end": 973,
+    "frames": 10,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     384
+    ],
+    "states": [
+     "FILLED",
+     "UNCERTAIN"
+    ],
+    "median_px": 169.6
+   },
+   {
+    "start": 1180,
+    "end": 1180,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     558
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 361.2
+   },
+   {
+    "start": 1183,
+    "end": 1183,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     559
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 390.9
+   },
+   {
+    "start": 1225,
+    "end": 1225,
+    "frames": 1,
+    "targets": [
+     1
+    ],
+    "tracks": [
+     586
+    ],
+    "states": [
+     "UNCERTAIN"
+    ],
+    "median_px": 306.0
+   }
+  ]
+ },
+ "settings": {
+  "conf_thr": 0.065,
+  "hit_thr": 0.037,
+  "search_time": 62,
+  "base_dist": 100.0,
+  "max_speed": 30.0,
+  "gap_weight": 3.0,
+  "speed_frames": 5,
+  "trust_frames": 10,
+  "fill_max": 62,
+  "still_speed": 2.0,
+  "still_dist": 40.0,
+  "focus_time": 25,
+  "suspects": true,
+  "suspect_radius": 250.0,
+  "suspect_time": 125,
+  "suspect_move_px": 40.0,
+  "move_frames": 25,
+  "suspects_until_confirmed": true
+ },
+ "targets_created": 1
+}

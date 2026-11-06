@@ -1,0 +1,23 @@
+# Install into the project venv only:
+#   .venv/bin/pip install -r requirements.txt
+# Pinned to the versions verified on 2026-10-23 (Python 3.14.7, macOS arm64).
+
+# video I/O, background subtraction, image processing
+opencv-python==5.0.0.93   # (Apache-2.0)
+numpy==2.5.4              # arrays (BSD-3)
+
+# person detection + tracking (Steps 2-3)
+ultralytics==8.4.184      # YOLO detector + ByteTrack/BoT-SORT trackers (AGPL-3.0); pulls in torch
+lap==0.5.13               # assignment solver needed by ByteTrack (BSD-2)
+
+# deep learning engine (Step 4B classifier); also required by ultralytics
+torch==2.14.1             # (BSD-3)
+torchvision==0.29.1       # augmentation + pretrained backbones (BSD-3)
+
+# results, evaluation, plots (Steps 5-8)
+pandas==3.1.0             # (BSD-3)
+matplotlib==3.11.2        # (PSF-style)
+tqdm==4.70.1              # progress bar for the live demo (MIT/MPL-2.0)
+
+# optional, only if YOLO misses people at the fisheye edges (on standby, not installed)
+# sahi>=0.11              # tiled inference (MIT)
