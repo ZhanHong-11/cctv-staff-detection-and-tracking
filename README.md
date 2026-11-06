@@ -1,4 +1,4 @@
-# FootfallCam AI evaluation: staff identification
+# Staff identification from CCTV footage
 
 Find the frames where the staff member (wearing the staff name tag) is present in an overhead
 fisheye video, and their x,y position. The task is in `AI Evaluation Test Candidates.pdf`.
